@@ -21,9 +21,9 @@ export default function App({ Component, pageProps }: AppPropsWithAttributes) {
   return (
     <>
       <Meta
-        title={Component.title}
-        description="A powerful zap starter template with simplicity and flexibility in mind"
-        image="https://user-images.githubusercontent.com/55322546/256514847-e21721f5-bb92-49e0-9d2d-23dc7f98f30d.png"
+        title={"Im Okay With Anything"}
+        description="I hope this helps you"
+        image="/hamburger.png"
       />
       <Provider>
         <AuthGuard Component={Component} pageProps={pageProps} />

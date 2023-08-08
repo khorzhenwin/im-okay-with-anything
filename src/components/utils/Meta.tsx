@@ -8,7 +8,7 @@ type MetaProps = {
 };
 
 const titleGenerator = (title?: string) => {
-  return title ? `${title} | Next Power Starter` : "Next Power Starter";
+  return title ? `${title} | IOWA` : "IOWA";
 };
 
 const Meta = ({ title, description, image, nested = false }: MetaProps) => {
@@ -26,6 +26,7 @@ const Meta = ({ title, description, image, nested = false }: MetaProps) => {
         <>
           <meta property="og:image" content={image} />
           <meta property="twitter:image" content={image} />
+          <link rel="icon" href="/hamburger.png" />
         </>
       )}
 
@@ -34,7 +35,7 @@ const Meta = ({ title, description, image, nested = false }: MetaProps) => {
         <>
           <meta property="og:type" content="website" />
           <meta property="twitter:card" content="summary_large_image" />
-          <link rel="icon" href="/favicon.ico" />
+          <link rel="icon" href="/hamburger.png" />
         </>
       )}
 
