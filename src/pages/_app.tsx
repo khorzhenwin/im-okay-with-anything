@@ -21,7 +21,7 @@ export default function App({ Component, pageProps }: AppPropsWithAttributes) {
   return (
     <>
       <Meta
-        title={"Im Okay With Anything"}
+        title={Component.title}
         description="I hope this helps you"
         image="/hamburger.png"
       />

@@ -39,7 +39,7 @@ const sizeToClassMapper = (size: ButtonSize) => {
 const Button = ({
   children,
   variant = "filled",
-  color = "indigo",
+  color = "yellow",
   size = "md",
   classNames,
   ...props

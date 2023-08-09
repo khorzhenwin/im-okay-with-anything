@@ -163,7 +163,7 @@ const tailwindColors: Record<
 
 const theme: MantineThemeOverride = {
   colors: tailwindColors,
-  colorScheme: "light",
+  colorScheme: "dark",
 };
 
 export default theme;
