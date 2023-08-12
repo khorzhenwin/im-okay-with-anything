@@ -11,7 +11,7 @@ const Home: NextPageWithAttributes = () => {
   const [activeTab, setActiveTab] = useState<string | null>("chowhound");
   return (
     <div className="flex min-h-screen w-full flex-col items-stretch">
-      <h3 className="pb-2 text-lg font-semibold text-white md:text-3xl">
+      <h3 className="pb-2 text-2xl font-semibold text-white md:text-3xl">
         {`I'm Okay With Anything`}
       </h3>
       <p className="pb-4 text-justify text-xs text-gray-500">
