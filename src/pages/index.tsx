@@ -3,12 +3,12 @@ import { NextPageWithAttributes } from "./_app";
 import { Tabs } from "@mantine/core";
 import { useState } from "react";
 import { IconDog, IconRobotOff } from "@tabler/icons-react";
-import DefaultForm from "@/components/forms/DefaultForm";
+import FoodFinder from "@/components/forms/FoodFinder";
 import NiceLink from "@/components/links/NiceLink";
 import useSession from "@/features/Auth/hooks/useSession";
 
 const Home: NextPageWithAttributes = () => {
-  const [activeTab, setActiveTab] = useState<string | null>("chowhound");
+  const [activeTab, setActiveTab] = useState<string | null>("foodfinder");
   return (
     <div className="flex min-h-screen w-full flex-col items-stretch">
       <h3 className="pb-2 text-2xl font-semibold text-white md:text-3xl">
@@ -25,16 +25,16 @@ const Home: NextPageWithAttributes = () => {
         onTabChange={setActiveTab}
       >
         <Tabs.List>
-          <Tabs.Tab value="chowhound" icon={<IconDog size="0.8rem" />}>
-            Chowhound
+          <Tabs.Tab value="foodfinder" icon={<IconDog size="0.8rem" />}>
+            FoodFinder
           </Tabs.Tab>
           <Tabs.Tab value="eliminator" icon={<IconRobotOff size="0.8rem" />}>
             Eliminator
           </Tabs.Tab>
         </Tabs.List>
 
-        <Tabs.Panel value="chowhound" pt="sm">
-          <DefaultForm />
+        <Tabs.Panel value="foodfinder" pt="sm">
+          <FoodFinder />
         </Tabs.Panel>
 
         <Tabs.Panel value="eliminator" pt="sm">
