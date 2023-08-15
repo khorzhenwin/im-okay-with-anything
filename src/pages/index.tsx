@@ -8,6 +8,7 @@ import NiceLink from "@/components/links/NiceLink";
 import useSession from "@/features/Auth/hooks/useSession";
 
 const Home: NextPageWithAttributes = () => {
+  const theme = "violet";
   const [activeTab, setActiveTab] = useState<string | null>("foodfinder");
   return (
     <div className="flex min-h-screen w-full flex-col items-stretch">
@@ -19,7 +20,7 @@ const Home: NextPageWithAttributes = () => {
       </p>
       <Tabs
         defaultValue="overview"
-        color="yellow"
+        color={theme}
         keepMounted={false}
         value={activeTab}
         onTabChange={setActiveTab}
@@ -34,7 +35,7 @@ const Home: NextPageWithAttributes = () => {
         </Tabs.List>
 
         <Tabs.Panel value="foodfinder" pt="sm">
-          <FoodFinder />
+          <FoodFinder theme={theme} />
         </Tabs.Panel>
 
         <Tabs.Panel value="eliminator" pt="sm">

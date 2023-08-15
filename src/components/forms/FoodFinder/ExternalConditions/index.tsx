@@ -5,9 +5,11 @@ import { initialFormProps } from "@/utils/types/forms";
 const ExternalConditionsSection = ({
   initialGroupSize,
   form,
+  theme,
 }: {
   initialGroupSize: number;
   form: any;
+  theme: string;
 }) => {
   const [groupSizeValue, setGroupSizeValue] = useState(initialGroupSize);
 
@@ -19,7 +21,7 @@ const ExternalConditionsSection = ({
           Group Size : {groupSizeValue}
         </Text>
         <Slider
-          color="yellow"
+          color={theme}
           value={groupSizeValue}
           onChange={(value) => {
             setGroupSizeValue(value);
@@ -46,7 +48,7 @@ const ExternalConditionsSection = ({
             <Checkbox
               key={key}
               label={initialFormProps.externalConditions[key].label}
-              color="yellow"
+              color={theme}
               {...form.getInputProps(`externalConditions.${key}.value`, {
                 type: "checkbox",
               })}

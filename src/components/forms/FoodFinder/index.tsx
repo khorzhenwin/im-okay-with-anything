@@ -5,11 +5,7 @@ import { useForm } from "@mantine/form";
 import ExternalConditionsSection from "./ExternalConditions";
 import FoodPreferencesSection from "./FoodPreferences";
 
-const FoodFinder = ({
-  externalConditions,
-  allergens,
-  preferences,
-}: FormProps) => {
+const FoodFinder = ({ theme }: { theme: string }) => {
   const initialGroupSize: number = 2;
   const form = useForm({ initialValues: initialFormProps });
 
@@ -20,13 +16,16 @@ const FoodFinder = ({
           <ExternalConditionsSection
             initialGroupSize={initialGroupSize}
             form={form}
+            theme={theme}
           />
         </section>
         <section id="foodPreferences" className="my-2 mt-8">
-          <FoodPreferencesSection form={form} />
+          <FoodPreferencesSection form={form} theme={theme} />
         </section>
         <Group position="right" mt="md">
-          <Button type="submit">SUBMIT</Button>
+          <Button type="submit" color={theme}>
+            SUBMIT
+          </Button>
         </Group>
       </form>
     </Box>

@@ -1,7 +1,7 @@
 import { Checkbox, SimpleGrid } from "@mantine/core";
 import { initialFormProps } from "@/utils/types/forms";
 
-const Allergens = ({ form }: { form: any }) => {
+const Allergens = ({ form, theme }: { form: any; theme: string }) => {
   return (
     <div>
       <p className="text-sm">Allergens</p>
@@ -23,7 +23,7 @@ const Allergens = ({ form }: { form: any }) => {
             <Checkbox
               key={key}
               label={initialFormProps.allergens[key].label}
-              color="yellow"
+              color={theme}
               {...form.getInputProps(`allergens.${key}.value`, {
                 type: "checkbox",
               })}
