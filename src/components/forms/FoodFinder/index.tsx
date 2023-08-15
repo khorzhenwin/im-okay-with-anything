@@ -1,9 +1,18 @@
 import Button from "@/components/buttons/Button";
-import { FormProps, initialFormProps } from "@/utils/types/forms";
-import { Box, Checkbox, Group, Slider, Text } from "@mantine/core";
+import { initialFormProps, FormProps } from "@/utils/types/forms";
+import { Box, Group } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import ExternalConditionsSection from "./ExternalConditions";
 import FoodPreferencesSection from "./FoodPreferences";
+
+async function onSubmit(values: FormProps) {
+  await fetch("/api/food-finder", {
+    method: "POST",
+    body: JSON.stringify(values),
+  })
+    .then((res) => res.json())
+    .then((data) => console.log(data));
+}
 
 const FoodFinder = ({ theme }: { theme: string }) => {
   const initialGroupSize: number = 2;
@@ -11,7 +20,12 @@ const FoodFinder = ({ theme }: { theme: string }) => {
 
   return (
     <Box maw={"100%"} mx="auto">
-      <form onSubmit={form.onSubmit((values) => console.log(values))}>
+      <form
+        onSubmit={form.onSubmit((payload) => {
+          console.log(payload);
+          onSubmit(payload);
+        })}
+      >
         <section id="externalConditions" className="my-2">
           <ExternalConditionsSection
             initialGroupSize={initialGroupSize}

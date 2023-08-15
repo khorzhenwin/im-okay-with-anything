@@ -1,11 +1,8 @@
-import Image from "next/image";
-import { NextPageWithAttributes } from "./_app";
-import { Tabs } from "@mantine/core";
-import { useState } from "react";
-import { IconDog, IconRobotOff } from "@tabler/icons-react";
 import FoodFinder from "@/components/forms/FoodFinder";
-import NiceLink from "@/components/links/NiceLink";
-import useSession from "@/features/Auth/hooks/useSession";
+import { Tabs } from "@mantine/core";
+import { IconDog, IconRobotOff } from "@tabler/icons-react";
+import { useState } from "react";
+import { NextPageWithAttributes } from "./_app";
 
 const Home: NextPageWithAttributes = () => {
   const theme = "violet";

@@ -5,9 +5,9 @@ interface CheckboxProps {
 }
 
 export interface FormProps {
-  externalConditions?: ExternalConditions;
-  allergens?: Allergens;
-  preferences?: Preferences;
+  externalConditions: ExternalConditions;
+  allergens: Allergens;
+  preferences: Preferences;
 }
 
 export interface ExternalConditions {
