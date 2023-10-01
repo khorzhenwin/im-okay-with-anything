@@ -13,17 +13,17 @@ enum ResponseStatusEnum {
 }
 
 enum ResponseMessageEnum {
-  OK = "OK",
-  CREATED = "CREATED",
-  BAD_REQUEST = "BAD_REQUEST",
-  UNAUTHORIZED = "UNAUTHORIZED",
-  FORBIDDEN = "FORBIDDEN",
-  NOT_FOUND = "NOT_FOUND",
-  CONFLICT = "CONFLICT",
-  INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR",
-  SERVICE_UNAVAILABLE = "SERVICE_UNAVAILABLE",
-  GATEWAY_TIMEOUT = "GATEWAY_TIMEOUT",
-  UNKNOWN_ERROR = "UNKNOWN_ERROR",
+  OK = "Success",
+  CREATED = "Success",
+  BAD_REQUEST = `Error ${ResponseStatusEnum.BAD_REQUEST}: Bad Request`,
+  UNAUTHORIZED = `Error ${ResponseStatusEnum.UNAUTHORIZED}: Unauthorized`,
+  FORBIDDEN = `Error ${ResponseStatusEnum.FORBIDDEN}: Forbidden`,
+  NOT_FOUND = `Error ${ResponseStatusEnum.NOT_FOUND}: Not Found`,
+  CONFLICT = `Error ${ResponseStatusEnum.CONFLICT}: Conflict`,
+  INTERNAL_SERVER_ERROR = `Error ${ResponseStatusEnum.INTERNAL_SERVER_ERROR}: Internal Server Error`,
+  SERVICE_UNAVAILABLE = `Error ${ResponseStatusEnum.SERVICE_UNAVAILABLE}: Service Unavailable`,
+  GATEWAY_TIMEOUT = `Error ${ResponseStatusEnum.GATEWAY_TIMEOUT}: Gateway Timeout`,
+  UNKNOWN_ERROR = `Error ${ResponseStatusEnum.UNKNOWN_ERROR}: Unknown Error`,
 }
 
 export const DEFAULT_RESPONSES = {

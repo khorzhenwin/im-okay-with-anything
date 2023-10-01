@@ -1,0 +1,170 @@
+{
+  "Chinese": {
+    "Rice & Dishes": {
+      "minGroupSize": 5,
+      "maxGroupSize": 100,
+      "isHalal": false,
+      "isVegetarian": true,
+      "allergens": ["Seafood", "Nuts"],
+      "preferences": [
+        "Vegetables",
+        "Spicy",
+        "Fried",
+        "Rice",
+        "Meat",
+        "Eggs",
+        "Steamed"
+      ]
+    },
+    "Chinese Noodles": {
+      "minGroupSize": 1,
+      "maxGroupSize": 100,
+      "isHalal": false,
+      "isVegetarian": true,
+      "allergens": [],
+      "preferences": ["Vegetables", "Spicy", "Soup", "Noodles", "Meat"]
+    },
+    "Dim Sum": {
+      "minGroupSize": 3,
+      "maxGroupSize": 15,
+      "isHalal": false,
+      "isVegetarian": false,
+      "allergens": [],
+      "preferences": ["Meat", "Steamed", "Fried"]
+    }
+  },
+  "Indian": {
+    "Mamak": {
+      "minGroupSize": 1,
+      "maxGroupSize": 8,
+      "isHalal": true,
+      "isVegetarian": true,
+      "allergens": ["Nuts"],
+      "preferences": ["Spicy", "Fried", "Rice", "Noodles", "Meat", "Eggs"]
+    },
+    "Banana Leaf": {
+      "minGroupSize": 1,
+      "maxGroupSize": 8,
+      "isHalal": true,
+      "isVegetarian": true,
+      "allergens": ["Nuts"],
+      "preferences": ["Spicy", "Fried", "Rice", "Meat", "Eggs"]
+    }
+  },
+  "Western": {
+    "Pizza": {
+      "minGroupSize": 1,
+      "maxGroupSize": 16,
+      "isHalal": true,
+      "isVegetarian": true,
+      "allergens": ["Dairy"],
+      "preferences": []
+    },
+    "Pasta": {
+      "minGroupSize": 1,
+      "maxGroupSize": 10,
+      "isHalal": true,
+      "isVegetarian": true,
+      "allergens": ["Dairy"],
+      "preferences": ["Pasta", "Noodles", "Meat", "Eggs"]
+    },
+    "Burgers": {
+      "minGroupSize": 1,
+      "maxGroupSize": 10,
+      "isHalal": true,
+      "isVegetarian": true,
+      "allergens": [],
+      "preferences": ["Fried", "Meat", "Eggs"]
+    },
+    "Grilled Meats": {
+      "minGroupSize": 1,
+      "maxGroupSize": 10,
+      "isHalal": true,
+      "isVegetarian": true,
+      "allergens": [],
+      "preferences": ["Meat", "Fried", "Vegetables"]
+    },
+    "Sandwiches": {
+      "minGroupSize": 1,
+      "maxGroupSize": 10,
+      "isHalal": true,
+      "isVegetarian": true,
+      "allergens": [],
+      "preferences": ["Meat", "Vegetables", "Eggs"]
+    },
+    "Salads": {
+      "minGroupSize": 1,
+      "maxGroupSize": 2,
+      "isHalal": true,
+      "isVegetarian": true,
+      "allergens": [],
+      "preferences": ["Vegetables", "Eggs"]
+    }
+  },
+  "Japanese": {
+    "Sushi": {
+      "minGroupSize": 1,
+      "maxGroupSize": 10,
+      "isHalal": false,
+      "isVegetarian": true,
+      "allergens": ["Seafood"],
+      "preferences": ["Raw", "Meat", "Fish", "Vegetables"]
+    },
+    "Ramen": {
+      "minGroupSize": 1,
+      "maxGroupSize": 10,
+      "isHalal": false,
+      "isVegetarian": true,
+      "allergens": [],
+      "preferences": ["Soup", "Noodles", "Meat", "Eggs"]
+    },
+    "Donburi": {
+      "minGroupSize": 1,
+      "maxGroupSize": 10,
+      "isHalal": false,
+      "isVegetarian": true,
+      "allergens": [],
+      "preferences": ["Rice", "Meat", "Eggs"]
+    },
+    "Yakitori": {
+      "minGroupSize": 1,
+      "maxGroupSize": 10,
+      "isHalal": false,
+      "isVegetarian": true,
+      "allergens": [],
+      "preferences": ["Meat", "Vegetables"]
+    },
+    "Tempura": {
+      "minGroupSize": 1,
+      "maxGroupSize": 10,
+      "isHalal": false,
+      "isVegetarian": true,
+      "allergens": [],
+      "preferences": ["Meat", "Vegetables"]
+    },
+    "Soba": {
+      "minGroupSize": 1,
+      "maxGroupSize": 10,
+      "isHalal": false,
+      "isVegetarian": true,
+      "allergens": [],
+      "preferences": ["Soup", "Noodles", "Meat", "Eggs"]
+    },
+    "Udon": {
+      "minGroupSize": 1,
+      "maxGroupSize": 10,
+      "isHalal": false,
+      "isVegetarian": true,
+      "allergens": [],
+      "preferences": ["Soup", "Noodles", "Meat", "Eggs"]
+    },
+    "Katsu": {
+      "minGroupSize": 1,
+      "maxGroupSize": 10,
+      "isHalal": false,
+      "isVegetarian": true,
+      "allergens": [],
+      "preferences": ["Meat", "Eggs"]
+    }
+  }
+}

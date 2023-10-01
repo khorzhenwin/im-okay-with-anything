@@ -27,6 +27,7 @@ export interface Allergens {
 export interface Preferences {
   isSpicy: CheckboxProps;
   hasFried: CheckboxProps;
+  hasSteamed: CheckboxProps;
   hasSoup: CheckboxProps;
   hasRice: CheckboxProps;
   hasNoodles: CheckboxProps;
@@ -52,6 +53,7 @@ export const initialFormProps: FormProps | any = {
   preferences: {
     isSpicy: { label: "Spicy", value: false },
     hasFried: { label: "Fried", value: false },
+    hasSteamed: { label: "Steamed", value: false },
     hasSoup: { label: "Soup", value: false },
     hasRice: { label: "Rice", value: false },
     hasNoodles: { label: "Noodles", value: false },

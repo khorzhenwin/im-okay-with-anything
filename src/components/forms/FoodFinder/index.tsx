@@ -20,12 +20,7 @@ const FoodFinder = ({ theme }: { theme: string }) => {
 
   return (
     <Box maw={"100%"} mx="auto">
-      <form
-        onSubmit={form.onSubmit((payload) => {
-          console.log(payload);
-          onSubmit(payload);
-        })}
-      >
+      <form onSubmit={form.onSubmit((payload) => onSubmit(payload))}>
         <section id="externalConditions" className="my-2">
           <ExternalConditionsSection
             initialGroupSize={initialGroupSize}
