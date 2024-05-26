@@ -37,7 +37,7 @@ export interface Preferences {
   hasVegetables: CheckboxProps;
 }
 
-export const initialFormProps: FormProps | any = {
+export const initialFormProps: FormProps = {
   externalConditions: {
     groupSize: 2,
     isRaining: { label: "Currently Raining", value: false },
