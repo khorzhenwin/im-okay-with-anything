@@ -1,11 +1,12 @@
 import Button from "@/components/buttons/Button";
 import {initialFormProps, FormProps} from "@/utils/types/forms";
-import {Box, Group, Modal, Text, List, LoadingOverlay} from "@mantine/core";
+import {Box, Group, Modal, Text, List, LoadingOverlay, ThemeIcon, rem} from "@mantine/core";
 import {useForm} from "@mantine/form";
 import {useDisclosure} from '@mantine/hooks';
 import ExternalConditionsSection from "./ExternalConditions";
 import FoodPreferencesSection from "./FoodPreferences";
 import useRecommendationStore from "@/stores/useRecommendationStore";
+import {FaArrowRight} from "react-icons/fa";
 
 const FoodFinder = ({theme}: { theme: string }) => {
     const [recommendations, setRecommendations] = useRecommendationStore((state) => [state.recommendations, state.setRecommendations]);
@@ -17,17 +18,28 @@ const FoodFinder = ({theme}: { theme: string }) => {
     return (
         <>
             <Box pos="relative">
-                <Modal opened={openModal} onClose={openModalHandlers.close} size="auto" title="What we found" h={"100%"}>
-                    <Text mb={12}>Here is a list of foods we can suggest you</Text>
-                    <LoadingOverlay visible={loadingAnimation} zIndex={1000} overlayBlur={0} overlayOpacity={0.5}/>
-
-                    <List withPadding>
-                        {recommendations.map((recommendation, index) => (
-                            <List.Item key={index}>
-                                {recommendation}
-                            </List.Item>
-                        ))}
-                    </List>
+                <Modal opened={openModal} onClose={openModalHandlers.close} size="auto" h={"100%"} radius={"md"} withCloseButton={false}>
+                    <Box p={12}>
+                        <Text mb={8} fw={700} size={"lg"} align={"center"}>Here is a list of foods we can suggest you</Text>
+                        <LoadingOverlay visible={loadingAnimation} zIndex={1000} overlayBlur={0} overlayOpacity={0.5}/>
+                        <List withPadding>
+                            {recommendations.map((recommendation, index) => (
+                                <List.Item key={index}
+                                           icon={
+                                               <ThemeIcon color="blue" size={16} radius="xl">
+                                                   <FaArrowRight style={{width: rem(8), height: rem(8)}}/>
+                                               </ThemeIcon>
+                                           }>
+                                    {recommendation}
+                                </List.Item>
+                            ))}
+                        </List>
+                        <Group position="right" mt="md" pt={8} onClick={regenerateValues}>
+                            <Button color={theme}>
+                                Generate Again
+                            </Button>
+                        </Group>
+                    </Box>
                 </Modal>
             </Box>
 
@@ -52,6 +64,14 @@ const FoodFinder = ({theme}: { theme: string }) => {
             </Box>
         </>
     );
+
+    async function regenerateValues() {
+        try {
+            await onSubmit(form.values);
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     async function onSubmit(values: FormProps) {
         setRecommendations([]);
