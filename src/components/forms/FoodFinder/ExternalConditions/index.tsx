@@ -1,6 +1,7 @@
-import { Checkbox, Slider, Text, SimpleGrid } from "@mantine/core";
+import {Checkbox, Slider, Text, SimpleGrid, CheckboxProps} from "@mantine/core";
 import { useState } from "react";
 import { initialFormProps } from "@/utils/types/forms";
+import { ExternalConditions } from "@/utils/types/forms";
 
 const ExternalConditionsSection = ({
   initialGroupSize,
@@ -42,12 +43,13 @@ const ExternalConditionsSection = ({
           { maxWidth: "36rem", cols: 2 },
         ]}
       >
-        {Object.keys(initialFormProps.externalConditions).map((key) => {
+        {Object.keys(initialFormProps.externalConditions).map((key: string) => {
           if (key === "groupSize") return null;
+          const condition : CheckboxProps = initialFormProps.externalConditions[key as keyof ExternalConditions] as CheckboxProps;
           return (
             <Checkbox
               key={key}
-              label={initialFormProps.externalConditions[key].label}
+              label={condition.label}
               color={theme}
               {...form.getInputProps(`externalConditions.${key}.value`, {
                 type: "checkbox",

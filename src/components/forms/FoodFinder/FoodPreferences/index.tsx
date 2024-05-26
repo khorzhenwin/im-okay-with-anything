@@ -1,5 +1,5 @@
-import Allergens from "./Allergens";
-import Preferences from "./Preferences";
+import AllergensSection from "./Allergens";
+import PreferencesSection from "./Preferences";
 
 const FoodPreferencesSection = ({
   form,
@@ -12,10 +12,10 @@ const FoodPreferencesSection = ({
     <div>
       <h3 className="pb-4 text-xl font-semibold ">Food Preferences</h3>
       <section id="allergens" className="py-2">
-        <Allergens form={form} theme={theme} />
+        <AllergensSection form={form} theme={theme} />
       </section>
       <section id="preferences" className="py-2 pt-4">
-        <Preferences form={form} theme={theme} />
+        <PreferencesSection form={form} theme={theme} />
       </section>
     </div>
   );
