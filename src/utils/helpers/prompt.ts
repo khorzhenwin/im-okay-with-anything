@@ -2,8 +2,8 @@ import {GoogleGenerativeAI} from "@google/generative-ai";
 import 'dotenv/config'
 import {FormProps} from "@/utils/types/forms";
 
-const API_KEY: string | undefined = process.env.GOOGLE_AI_STUDIO_API_KEY;
-const genAI = new GoogleGenerativeAI(<string>API_KEY);
+const GOOGLE_AI_STUDIO_API_KEY: string | undefined = process.env.GOOGLE_AI_STUDIO_API_KEY;
+const genAI = new GoogleGenerativeAI(<string>GOOGLE_AI_STUDIO_API_KEY);
 
 export const promptModel = async (prompt: string): Promise<string> => {
     // The Gemini 1.5 models are versatile and work with both text-only and multimodal prompts

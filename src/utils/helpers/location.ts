@@ -1,20 +1,14 @@
-import {LocationInterface} from "@/utils/types/location";
+import 'dotenv/config'
 
-export const getUserLocation = (): LocationInterface => {
-    let location: LocationInterface = {
-        latitude: "0",
-        longitude: "0"
-    };
+const GEOAPIFY_API_KEY: string | undefined = process.env.GEOAPIFY_KEY;
+const url = `https://api.geoapify.com/v1/ipinfo?apiKey=${GEOAPIFY_API_KEY}`;
 
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => {
-                location.latitude = position.coords.latitude.toString();
-                location.longitude = position.coords.longitude.toString();
-            }, (error) => {
-                throw new Error(`Error getting user location: ${error}`);
-            }
-        );
-    }
+export const getUserLocation = async (): Promise<string> => {
+    let locationName: string = '';
 
-    return location;
+    await fetch(`${url}`)
+        .then(response => response.json())
+        .then(data => locationName = data.city.name + ', ' + data.country.name)
+
+    return locationName;
 }
