@@ -9,7 +9,7 @@ const Home: NextPageWithAttributes = () => {
     const theme = "violet";
     const [activeTab, setActiveTab] = useState<string | null>("foodfinder");
     return (
-        <div className="flex min-h-screen w-full flex-col items-stretch">
+        <div className="flex min-h-screen w-full flex-col items-stretch overflow-hidden">
             <h3 className="pb-2 text-2xl font-semibold text-white md:text-3xl">
                 {`I'm Okay With Anything`}
             </h3>
