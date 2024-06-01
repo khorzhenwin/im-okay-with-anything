@@ -1,20 +1,16 @@
 import LocationInput from "@/components/input/LocationInput";
-import ExternalConditionsSection from "@/components/forms/FoodFinder/ExternalConditions";
-import {useForm} from "@mantine/form";
-import {initialFormProps} from "@/utils/types/forms";
-import {Box} from "@mantine/core";
+import {Group} from "@mantine/core";
+import Button from "@/components/buttons/Button";
 
 const Election = ({theme}: { theme: string }) => {
-    const initialGroupSize: number = 2;
-    const form = useForm({initialValues: initialFormProps});
 
     return <>
-        <ExternalConditionsSection
-            initialGroupSize={initialGroupSize}
-            form={form}
-            theme={theme}
-        />
         <LocationInput theme={theme}/>
+        <Group position="right" mt="md" pt={8}>
+            <Button color={theme}>
+                Start Voting!
+            </Button>
+        </Group>
     </>
 };
 
