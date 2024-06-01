@@ -36,6 +36,11 @@ const handler = async (req: RestaurantFinderRequest, res: NextApiResponse) => {
             ),
     });
 
+    if ((result.data.elements as any[]).length === 0) {
+        res.json([]);
+        return;
+    }
+
     const newResult = await promptModel(
         `Pick 15 random and good restaurants based on this list. Return it as pure JSON, no markdown or any other formatting: ${JSON.stringify(result.data.elements)}`,
     );
