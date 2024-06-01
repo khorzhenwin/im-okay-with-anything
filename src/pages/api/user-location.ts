@@ -10,7 +10,7 @@ const handler = async (
         res.status(DEFAULT_RESPONSES.FORBIDDEN.status).json({message: DEFAULT_RESPONSES.FORBIDDEN.message});
     }
 
-    const locationName: string = await getUserLocation(req.query.userIp as string);
+    const locationName: string = await getUserLocation();
     res.status(DEFAULT_RESPONSES.OK.status).json({locationName});
 }
 

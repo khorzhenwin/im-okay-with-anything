@@ -1,10 +1,8 @@
 import {TextInput, rem, Group, LoadingOverlay, Box, Text} from '@mantine/core';
 import {IconMapPin} from '@tabler/icons-react';
-import Button from "@/components/buttons/Button";
 import useLocationStore from "@/stores/useLocationStore";
 import "dotenv/config";
 import {ChangeEvent} from "react";
-import {getUserIp} from "@/utils/helpers/location";
 import {useDisclosure} from "@mantine/hooks";
 
 const LocationInput = ({theme}: { theme: string }) => {
@@ -12,8 +10,7 @@ const LocationInput = ({theme}: { theme: string }) => {
     const [locationName, setLocationName] = useLocationStore((state) => [state.locationName, state.setLocationName]);
     const getUserLocation = async () => {
         loadingAnimationHandlers.open();
-        const userIp = await getUserIp();
-        await fetch(`/api/user-location?userIp=${userIp}`, {method: "GET"})
+        await fetch(`/api/user-location`, {method: "GET"})
             .then((res) => res.json())
             .then((data) => setLocationName(data.locationName))
             .catch((error) => console.error(error));
@@ -38,11 +35,6 @@ const LocationInput = ({theme}: { theme: string }) => {
                     onChange={handleInputChange}
                 />
             </Box>
-            <Group position="right" mt="md" pt={8}>
-                <Button color={theme}>
-                    Start Voting!
-                </Button>
-            </Group>
         </Box>
     </>
 };
