@@ -1,5 +1,6 @@
 import { DEFAULT_RESPONSES } from "@/utils/errors/default";
-import { promptModel } from "@/utils/helpers/prompt";
+import { shuffle } from "@/utils/helpers/array";
+import { RestaurantFinderResponse } from "@/utils/types/restaurant-finder";
 import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 import z from "zod";
@@ -16,6 +17,8 @@ interface RestaurantFinderRequest extends NextApiRequest {
     body: RestaurantFinderQuery;
 }
 
+const GEOAPIFY_API_KEY: string | undefined = process.env.GEOAPIFY_KEY;
+
 const handler = async (req: RestaurantFinderRequest, res: NextApiResponse) => {
     const { success, data } = RestaurantFinderQuerySchema.safeParse(req.query);
 
@@ -24,28 +27,25 @@ const handler = async (req: RestaurantFinderRequest, res: NextApiResponse) => {
         return;
     }
 
-    const result = await axios("https://overpass-api.de/api/interpreter", {
-        method: "POST",
-        // The body contains the query
-        // to understand the query language see "The Programmatic Query Language" on
-        // https://wiki.openstreetmap.org/wiki/Overpass_API#The_Programmatic_Query_Language_(OverpassQL)
-        data:
-            "data=" +
-            encodeURIComponent(
-                `[out:json][timeout:10];(node["amenity"="restaurant"](around:${data.radius * 1000},${data.lat},${data.lng}););out tags qt center;`,
-            ),
+    const result = await axios<RestaurantFinderResponse>("https://api.geoapify.com/v2/places", {
+        method: "GET",
+        params: {
+            categories: "catering.restaurant",
+            filter: `circle:${data.lng},${data.lat},${data.radius * 1000}`,
+            limit: 100,
+            bias: `proximity:${data.lng},${data.lat}`,
+            apiKey: GEOAPIFY_API_KEY,
+        },
     });
 
-    if ((result.data.elements as any[]).length === 0) {
+    const filtered = result.data.features.filter((f) => f.properties.name != null);
+
+    if (filtered.length === 0) {
         res.json([]);
         return;
     }
 
-    const newResult = await promptModel(
-        `Pick 15 random and good restaurants based on this list. Return it as pure JSON, no markdown or any other formatting: ${JSON.stringify(result.data.elements)}`,
-    );
-
-    return res.json(JSON.parse(newResult));
+    return res.json(shuffle(shuffle(shuffle(shuffle(shuffle(shuffle(filtered)))))));
 };
 
 export default handler;
