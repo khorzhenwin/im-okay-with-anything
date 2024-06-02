@@ -4,41 +4,39 @@ import LocationInput from "@/components/input/LocationInput";
 import { CardInterface } from "@/utils/types/card";
 import { Group } from "@mantine/core";
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 
 const Election = ({ theme }: { theme: string }) => {
     const [restaurants, setRestaurants] = useState<CardInterface[]>([]);
-    const isLoading = useRef(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    useEffect(() => {
-        if (isLoading.current === true) return;
+    const fetchRestaurants = useCallback(() => {
+        if (isLoading === true) return;
 
         navigator.geolocation.getCurrentPosition(
-            (pos) => {
-                isLoading.current = true;
-                axios("/api/restaurant-finder", {
+            async (pos) => {
+                setIsLoading(true);
+                const res = await axios("/api/restaurant-finder", {
                     params: { lat: pos.coords.latitude, lng: pos.coords.longitude, radius: 6 },
-                })
-                    .then((res) => {
-                        setRestaurants(res.data.map((d: any) => ({ restaurantName: d.tags.name, id: d.id }) as CardInterface));
-                    })
-                    .finally(() => {
-                        isLoading.current = true;
-                    });
+                });
+                setRestaurants(res.data.map((d: any) => ({ restaurantName: d.tags.name, id: d.id }) as CardInterface));
+                setIsLoading(false);
             },
             (err) => {
                 console.log(err);
-                isLoading.current = true;
+                setIsLoading(false);
             },
             { enableHighAccuracy: true },
         );
-    }, []);
+    }, [isLoading]);
 
     return (
         <>
             <LocationInput theme={theme} />
             <Group position="right" mt="md" pt={8}>
-                <Button color={theme}>Start Voting!</Button>
+                <Button loading={isLoading} onClick={() => fetchRestaurants()} color={theme}>
+                    Start Voting!
+                </Button>
             </Group>
             <ListingCard theme={theme} cardList={restaurants} />
         </>
