@@ -1,20 +1,24 @@
-import React, {useState, useMemo, useRef, useEffect} from 'react';
-import TinderCard from 'react-tinder-card';
-import {Card, Image, Text, Badge, Button, Group, Box, Stack} from '@mantine/core';
-import {CardInterface} from "@/utils/types/card";
+import { screamingSnakeToTitleCase } from "@/utils/helpers/string";
+import { Badge, Box, Button, Card, Group, Image, Stack, Text } from "@mantine/core";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import TinderCard from "react-tinder-card";
 
-const ListingCard = ({theme, cardList}: { theme: string, cardList: CardInterface[] }) => {
+const ListingCard = ({ theme, cardList }: { theme: string; cardList: RestaurantFinder.Feature[] }) => {
     const [currentIndex, setCurrentIndex] = useState(cardList.length - 1);
-    const [lastSwipedCard, setLastSwipedCard] = useState<CardInterface | null>(null);
+    const [lastSwipedCard, setLastSwipedCard] = useState<RestaurantFinder.Feature | null>(null);
     const currentIndexRef = useRef(currentIndex);
 
     useEffect(() => {
-        currentIndexRef.current = currentIndex;
-    }, [currentIndex]);
+        setCurrentIndex(cardList.length - 1);
+        currentIndexRef.current = cardList.length - 1;
+    }, [cardList]);
 
     const childRefs: any = useMemo(
-        () => Array(cardList.length).fill(0).map(() => React.createRef()),
-        [cardList.length]
+        () =>
+            Array(cardList.length)
+                .fill(0)
+                .map(() => React.createRef()),
+        [cardList.length],
     );
 
     const updateCurrentIndex = (val: number) => {
@@ -26,11 +30,11 @@ const ListingCard = ({theme, cardList}: { theme: string, cardList: CardInterface
     const canSwipe = currentIndex >= 0;
 
     const onSwipe = (direction: string, id: string, index: number) => {
-        setLastSwipedCard(cardList.find(card => card.id === id) || null);
+        setLastSwipedCard(cardList.find((card) => card.properties.place_id === id) || null);
         updateCurrentIndex(index - 1);
     };
 
-    const outOfFrame = (name: string, idx: number) => {
+    const outOfFrame = (idx: number) => {
         if (currentIndexRef.current >= idx) {
             childRefs[idx].current.restoreCard();
         }
@@ -50,36 +54,51 @@ const ListingCard = ({theme, cardList}: { theme: string, cardList: CardInterface
         }
     };
 
+    const getCuisines = (info: RestaurantFinder.Feature) => {
+        if (info.properties.catering?.cuisine == null) return null;
+
+        return info.properties.catering?.cuisine.split(";").map((c) => (
+            <Badge color="teal" key={c}>
+                {screamingSnakeToTitleCase(c)}
+            </Badge>
+        ));
+    };
+
     return (
         <Box pt={24}>
             <Box pos={"relative"} h={"18rem"}>
-                {cardList.map((cardInfo: CardInterface, index) => (
-                    <Box key={cardInfo.id} pos={"absolute"} w={"100%"}
-                         style={{display: currentIndex >= index ? 'block' : 'none'}}>
+                {cardList.map((cardInfo: RestaurantFinder.Feature, index) => (
+                    <Box
+                        key={cardInfo.properties.place_id}
+                        pos={"absolute"}
+                        w={"100%"}
+                        style={{ display: currentIndex >= index ? "block" : "none" }}
+                    >
                         <TinderCard
                             ref={childRefs[index]}
-                            onSwipe={(dir) => onSwipe(dir, cardInfo.id, index)}
-                            onCardLeftScreen={() => outOfFrame(cardInfo.restaurantName, index)}
-                            preventSwipe={['up', 'down']}
+                            onSwipe={(dir) => onSwipe(dir, cardInfo.properties.place_id, index)}
+                            onCardLeftScreen={() => outOfFrame(index)}
+                            preventSwipe={["up", "down"]}
                         >
                             <Card shadow="sm" padding="lg" radius="md" withBorder h={"18rem"}>
                                 <Card.Section>
                                     <Image
-                                        src={cardInfo.image ? cardInfo.image : 'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png'}
+                                        src={
+                                            "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png"
+                                        }
                                         height={160}
-                                        alt={cardInfo.restaurantName}
+                                        alt={cardInfo.properties.name}
                                     />
                                 </Card.Section>
 
                                 <Stack spacing={8} py={12}>
-                                    <Text fw={600} className={"truncate"}>{cardInfo.restaurantName}</Text>
-                                    {cardInfo.cuisine &&
-                                        <Group grow>
-                                            {cardInfo.cuisine.map((cuisineTag: string) => (
-                                                <Badge color="teal" key={cuisineTag}>{cuisineTag}</Badge>
-                                            ))}
-                                        </Group>}
-                                    {cardInfo.location && <Text size="sm" c="dimmed">{cardInfo.location}</Text>}
+                                    <Text fw={600} className={"truncate"}>
+                                        {cardInfo.properties.name_international?.en ?? cardInfo.properties.name}
+                                    </Text>
+                                    <Group>{getCuisines(cardInfo)}</Group>
+                                    <Text size="sm" c="dimmed">
+                                        {cardInfo.properties.formatted}
+                                    </Text>
                                 </Stack>
                             </Card>
                         </TinderCard>

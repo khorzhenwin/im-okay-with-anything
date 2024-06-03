@@ -3,5 +3,5 @@ export interface CardInterface {
     restaurantName: string;
     location?: string;
     image?: string;
-    cuisine?: string[];
+    cuisine?: string;
 }

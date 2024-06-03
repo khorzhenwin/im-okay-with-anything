@@ -1,55 +1,40 @@
-import LocationInput from "@/components/input/LocationInput";
-import {Group} from "@mantine/core";
 import Button from "@/components/buttons/Button";
 import ListingCard from "@/components/cards/ListingCard";
-import {CardInterface} from "@/utils/types/card";
+import LocationInput from "@/components/input/LocationInput";
+import useLocationStore from "@/stores/useLocationStore";
+import { Group, NumberInput } from "@mantine/core";
+import axios from "axios";
+import { useCallback, useState } from "react";
 
-const foodList: CardInterface[] = [
-    {
-        id: "1",
-        restaurantName: "KFC",
-        location: "Kuala Lumpur",
-        image: "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png",
-        cuisine: ["Fast Food"]
-    },
-    {
-        id: "2",
-        restaurantName: "McDonald's",
-        location: "Kuala Lumpur",
-    },
-    {
-        id: "3",
-        restaurantName: "Burger King Kongek Besar Jahanam",
-        image: "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png",
-        cuisine: ["King Kong", "Fast Food"]
-    },
-    {
-        id: "4",
-        restaurantName: "Subweiweiweiweiweiweiweiweiweiweiweiweiweiwei",
-        location: "Kuala Lumpur",
-        image: "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png",
-        cuisine: ["Sandwiches"]
-    },
-    {
-        id: "5",
-        restaurantName: "Texas Chicken",
-        location: "Kuala Lumpur",
-        image: "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png",
-        cuisine: ["Down south"]
-    }
-];
+const Election = ({ theme }: { theme: string }) => {
+    const [restaurants, setRestaurants] = useState<RestaurantFinder.Feature[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [searchRadius, setSearchRadius] = useState(5);
+    const [lat, lon] = useLocationStore((state) => [state.latitude, state.longitude]);
 
-const Election = ({theme}: { theme: string }) => {
+    const fetchRestaurants = useCallback(async () => {
+        if (isLoading === true) return;
 
-    return <>
-        <LocationInput theme={theme}/>
-        <Group position="right" mt="md" pt={8}>
-            <Button color={theme}>
-                Start Voting!
-            </Button>
-        </Group>
-        <ListingCard theme={theme} cardList={foodList}/>
-    </>
+        setIsLoading(true);
+        const res = await axios("/api/restaurant-finder", {
+            params: { lat, lon, radius: searchRadius },
+        });
+        setRestaurants(res.data);
+        setIsLoading(false);
+    }, [isLoading, searchRadius, lat, lon]);
+
+    return (
+        <>
+            <LocationInput theme={theme} />
+            <NumberInput value={searchRadius} onChange={(e: number) => setSearchRadius(e)} label="Search Radius (KM)" />
+            <Group position="right" mt="md" pt={8}>
+                <Button loading={isLoading} onClick={() => fetchRestaurants()} color={theme}>
+                    Start Voting!
+                </Button>
+            </Group>
+            <ListingCard theme={theme} cardList={restaurants} />
+        </>
+    );
 };
 
 export default Election;

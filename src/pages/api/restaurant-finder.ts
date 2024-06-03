@@ -1,12 +1,13 @@
 import { DEFAULT_RESPONSES } from "@/utils/errors/default";
-import { promptModel } from "@/utils/helpers/prompt";
+import { shuffle } from "@/utils/helpers/array";
 import axios from "axios";
+import "dotenv/config";
 import { NextApiRequest, NextApiResponse } from "next";
 import z from "zod";
 
 const RestaurantFinderQuerySchema = z.object({
     lat: z.coerce.number(),
-    lng: z.coerce.number(),
+    lon: z.coerce.number(),
     radius: z.coerce.number().default(2),
 });
 
@@ -16,6 +17,8 @@ interface RestaurantFinderRequest extends NextApiRequest {
     body: RestaurantFinderQuery;
 }
 
+const GEOAPIFY_API_KEY: string | undefined = process.env.GEOAPIFY_KEY;
+
 const handler = async (req: RestaurantFinderRequest, res: NextApiResponse) => {
     const { success, data } = RestaurantFinderQuerySchema.safeParse(req.query);
 
@@ -24,23 +27,25 @@ const handler = async (req: RestaurantFinderRequest, res: NextApiResponse) => {
         return;
     }
 
-    const result = await axios("https://overpass-api.de/api/interpreter", {
-        method: "POST",
-        // The body contains the query
-        // to understand the query language see "The Programmatic Query Language" on
-        // https://wiki.openstreetmap.org/wiki/Overpass_API#The_Programmatic_Query_Language_(OverpassQL)
-        data:
-            "data=" +
-            encodeURIComponent(
-                `[out:json][timeout:10];(node["amenity"="restaurant"](around:${data.radius * 1000},${data.lat},${data.lng}););out tags qt center;`,
-            ),
+    const result = await axios<RestaurantFinder.Response>("https://api.geoapify.com/v2/places", {
+        method: "GET",
+        params: {
+            categories: "catering.restaurant",
+            filter: `circle:${data.lon},${data.lat},${data.radius * 1000}`,
+            limit: 100,
+            bias: `proximity:${data.lon},${data.lat}`,
+            apiKey: GEOAPIFY_API_KEY,
+        },
     });
 
-    const newResult = await promptModel(
-        `Pick 15 random and good restaurants based on this list. Return it as pure JSON, no markdown or any other formatting: ${JSON.stringify(result.data.elements)}`,
-    );
+    const filtered = result.data.features.filter((f) => f.properties.name != null);
 
-    return res.json(JSON.parse(newResult));
+    if (filtered.length === 0) {
+        res.json([]);
+        return;
+    }
+
+    return res.json(shuffle(filtered));
 };
 
 export default handler;
