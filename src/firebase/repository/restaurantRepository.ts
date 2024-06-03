@@ -39,7 +39,7 @@ export default class RestaurantRepository {
   static findByUserId = async (id: string) =>
     (await getDocs(query(this.ref, where("userId", "==", id)))).docs.at(0);
 
-// ----- UPDATE METHODS -----
+  // ----- UPDATE METHODS -----
   static update = async (
     docRef: DocumentReference<Restaurant>,
     newValues: Partial<Restaurant>
@@ -50,7 +50,6 @@ export default class RestaurantRepository {
   };
 
   // ----- ADD METHODS -----
-
   static add = async (values: Restaurant) => {
     return await addDoc(RestaurantRepository.ref, values);
   };
@@ -88,7 +87,6 @@ export default class RestaurantRepository {
   };
 
   // ----- REMOVE METHODS -----
-
   static removeListingsById = async (id: string) => {
     const docRef = await RestaurantRepository.findById(id);
     await RestaurantRepository.update(docRef!.ref, { listing: [] });

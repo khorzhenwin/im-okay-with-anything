@@ -2,7 +2,6 @@ import {FormProps} from "@/utils/types/forms";
 import {NextApiRequest, NextApiResponse} from "next";
 import {DEFAULT_RESPONSES} from "@/utils/errors/default";
 import {formatPrompt, promptModel} from "@/utils/helpers/prompt";
-import RestaurantRepository from "@/firebase/repository/restaurantRepository";
 
 interface FormRequest extends NextApiRequest {
     body: FormProps;
@@ -26,8 +25,6 @@ const handler = async (
 
     // parse recommendation as array of strings and preprocess
     const recommendationList: string[] = recommendation.replace(/["'\[\]\n\t]/g, "").split(", ");
-
-    RestaurantRepository.add({session_id:"123", location_id: "123", listing: []});
 
     res.status(DEFAULT_RESPONSES.CREATED.status).json({recommendation: recommendationList});
 };
