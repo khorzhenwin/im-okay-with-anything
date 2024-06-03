@@ -8,11 +8,12 @@ import { useCallback, useEffect, useState } from "react";
 
 const LocationInput = ({ theme }: { theme: string }) => {
     const [loadingAnimation, loadingAnimationHandlers] = useDisclosure(false);
-    const [locationName, setLocationName, setLatitude, setLongitude] = useLocationStore((state) => [
+    const [locationName, setLocationName, setLatitude, setLongitude, setLocationId] = useLocationStore((state) => [
         state.locationName,
         state.setLocationName,
         state.setLatitude,
         state.setLongitude,
+        state.setLocationId,
     ]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [debouncedQuery] = useDebouncedValue(locationName, 500);
@@ -51,8 +52,9 @@ const LocationInput = ({ theme }: { theme: string }) => {
                     return;
                 }
 
-                const { formatted, lat, lon } = res.data[0];
+                const { formatted, lat, lon, place_id } = res.data[0];
                 setLocationName(formatted);
+                setLocationId(place_id);
                 setLatitude(lat.toString());
                 setLongitude(lon.toString());
             },
@@ -62,7 +64,7 @@ const LocationInput = ({ theme }: { theme: string }) => {
             },
             { enableHighAccuracy: true },
         );
-    }, [isLoading, setLatitude, setLongitude, setLocationName]);
+    }, [isLoading, setLatitude, setLongitude, setLocationName, setLocationId]);
 
     const icon = <IconMapPin style={{ width: rem(16), height: rem(16) }} onClick={getUserLocation} />;
 
@@ -72,11 +74,17 @@ const LocationInput = ({ theme }: { theme: string }) => {
                 <Box pos="relative">
                     <LoadingOverlay visible={loadingAnimation} zIndex={1000} overlayBlur={0} overlayOpacity={0.5} />
                     <Autocomplete
-                        data={addressOptions.map((a) => ({ value: a.formatted, lat: a.lat, lon: a.lon }))}
+                        data={addressOptions.map((a) => ({
+                            value: a.formatted,
+                            lat: a.lat,
+                            lon: a.lon,
+                            place_id: a.place_id,
+                        }))}
                         value={locationName}
                         onChange={setLocationName}
                         onItemSubmit={(item) => {
                             setLocationName(item.value);
+                            setLocationId(item.place_id);
                             setLatitude(item.lat);
                             setLongitude(item.lon);
                         }}

@@ -5,3 +5,5 @@ export interface CardInterface {
     image?: string;
     cuisine?: string;
 }
+
+export type SwipeDirection = "left" | "right" | "up" | "down";

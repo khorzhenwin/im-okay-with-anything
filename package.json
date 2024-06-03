@@ -36,6 +36,7 @@
     "firebase": "^10.12.2",
     "firebase-tools": "^13.10.2",
     "google-auth-library": "^9.10.0",
+    "nanoid": "^5.0.7",
     "next": "^14.2.3",
     "postcss": "8.4.38",
     "react": "18.3.1",
