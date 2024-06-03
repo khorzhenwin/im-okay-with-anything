@@ -1,11 +1,21 @@
+import ListingDetails from "@/firebase/interfaces/listingDetails";
 import { screamingSnakeToTitleCase } from "@/utils/helpers/string";
+import { SwipeDirection } from "@/utils/types/card";
 import { Badge, Box, Button, Card, Group, Image, Stack, Text } from "@mantine/core";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import TinderCard from "react-tinder-card";
 
-const ListingCard = ({ theme, cardList }: { theme: string; cardList: RestaurantFinder.Feature[] }) => {
+const ListingCard = ({
+    theme,
+    cardList,
+    onSwipe = () => {},
+}: {
+    theme: string;
+    cardList: ListingDetails[];
+    onSwipe: (direction: SwipeDirection, id: string, index: number) => void;
+}) => {
     const [currentIndex, setCurrentIndex] = useState(cardList.length - 1);
-    const [lastSwipedCard, setLastSwipedCard] = useState<RestaurantFinder.Feature | null>(null);
+    const [lastSwipedCard, setLastSwipedCard] = useState<ListingDetails | null>(null);
     const currentIndexRef = useRef(currentIndex);
 
     useEffect(() => {
@@ -29,9 +39,10 @@ const ListingCard = ({ theme, cardList }: { theme: string; cardList: RestaurantF
     const canGoBack = currentIndex < cardList.length - 1;
     const canSwipe = currentIndex >= 0;
 
-    const onSwipe = (direction: string, id: string, index: number) => {
-        setLastSwipedCard(cardList.find((card) => card.properties.place_id === id) || null);
+    const handleSwipe = (direction: string, id: string, index: number) => {
+        setLastSwipedCard(cardList.find((card) => card.id === id) || null);
         updateCurrentIndex(index - 1);
+        onSwipe(direction as SwipeDirection, id, index);
     };
 
     const outOfFrame = (idx: number) => {
@@ -54,10 +65,10 @@ const ListingCard = ({ theme, cardList }: { theme: string; cardList: RestaurantF
         }
     };
 
-    const getCuisines = (info: RestaurantFinder.Feature) => {
-        if (info.properties.catering?.cuisine == null) return null;
+    const getCuisines = (info: ListingDetails) => {
+        if (info.cuisine == null) return null;
 
-        return info.properties.catering?.cuisine.split(";").map((c) => (
+        return info.cuisine.split(";").map((c) => (
             <Badge color="teal" key={c}>
                 {screamingSnakeToTitleCase(c)}
             </Badge>
@@ -67,37 +78,31 @@ const ListingCard = ({ theme, cardList }: { theme: string; cardList: RestaurantF
     return (
         <Box pt={24}>
             <Box pos={"relative"} h={"18rem"}>
-                {cardList.map((cardInfo: RestaurantFinder.Feature, index) => (
+                {cardList.map((cardInfo: ListingDetails, index) => (
                     <Box
-                        key={cardInfo.properties.place_id}
+                        key={cardInfo.id}
                         pos={"absolute"}
                         w={"100%"}
                         style={{ display: currentIndex >= index ? "block" : "none" }}
                     >
                         <TinderCard
                             ref={childRefs[index]}
-                            onSwipe={(dir) => onSwipe(dir, cardInfo.properties.place_id, index)}
+                            onSwipe={(dir) => handleSwipe(dir, cardInfo.id, index)}
                             onCardLeftScreen={() => outOfFrame(index)}
                             preventSwipe={["up", "down"]}
                         >
                             <Card shadow="sm" padding="lg" radius="md" withBorder h={"18rem"}>
                                 <Card.Section>
-                                    <Image
-                                        src={
-                                            "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png"
-                                        }
-                                        height={160}
-                                        alt={cardInfo.properties.name}
-                                    />
+                                    <Image src={cardInfo.image} height={160} alt={cardInfo.name} />
                                 </Card.Section>
 
                                 <Stack spacing={8} py={12}>
                                     <Text fw={600} className={"truncate"}>
-                                        {cardInfo.properties.name_international?.en ?? cardInfo.properties.name}
+                                        {cardInfo.name}
                                     </Text>
                                     <Group>{getCuisines(cardInfo)}</Group>
                                     <Text size="sm" c="dimmed">
-                                        {cardInfo.properties.formatted}
+                                        {cardInfo.location}
                                     </Text>
                                 </Stack>
                             </Card>

@@ -29,7 +29,6 @@ const handler = async (req: AddressAutocompleteRequest, res: NextApiResponse) =>
         method: "GET",
         params: {
             text: data.text,
-            type: "city",
             format: "json",
             limit: 5,
             filter: "countrycode:my",
