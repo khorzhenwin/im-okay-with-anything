@@ -1,12 +1,11 @@
 import { screamingSnakeToTitleCase } from "@/utils/helpers/string";
-import { Feature } from "@/utils/types/restaurant-finder";
 import { Badge, Box, Button, Card, Group, Image, Stack, Text } from "@mantine/core";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import TinderCard from "react-tinder-card";
 
-const ListingCard = ({ theme, cardList }: { theme: string; cardList: Feature[] }) => {
+const ListingCard = ({ theme, cardList }: { theme: string; cardList: RestaurantFinder.Feature[] }) => {
     const [currentIndex, setCurrentIndex] = useState(cardList.length - 1);
-    const [lastSwipedCard, setLastSwipedCard] = useState<Feature | null>(null);
+    const [lastSwipedCard, setLastSwipedCard] = useState<RestaurantFinder.Feature | null>(null);
     const currentIndexRef = useRef(currentIndex);
 
     useEffect(() => {
@@ -23,7 +22,6 @@ const ListingCard = ({ theme, cardList }: { theme: string; cardList: Feature[] }
     );
 
     const updateCurrentIndex = (val: number) => {
-        console.log(cardList[val]);
         setCurrentIndex(val);
         currentIndexRef.current = val;
     };
@@ -56,7 +54,7 @@ const ListingCard = ({ theme, cardList }: { theme: string; cardList: Feature[] }
         }
     };
 
-    const getCuisines = (info: Feature) => {
+    const getCuisines = (info: RestaurantFinder.Feature) => {
         if (info.properties.catering?.cuisine == null) return null;
 
         return info.properties.catering?.cuisine.split(";").map((c) => (
@@ -69,7 +67,7 @@ const ListingCard = ({ theme, cardList }: { theme: string; cardList: Feature[] }
     return (
         <Box pt={24}>
             <Box pos={"relative"} h={"18rem"}>
-                {cardList.map((cardInfo: Feature, index) => (
+                {cardList.map((cardInfo: RestaurantFinder.Feature, index) => (
                     <Box
                         key={cardInfo.properties.place_id}
                         pos={"absolute"}
