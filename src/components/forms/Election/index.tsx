@@ -4,13 +4,13 @@ import ListingDetails from "@/firebase/interfaces/listingDetails";
 import Session from "@/firebase/interfaces/session";
 import SessionRepository from "@/firebase/repository/sessionRepository";
 import useLocationStore from "@/stores/useLocationStore";
-import { Anchor, Group, NumberInput, Table } from "@mantine/core";
+import {Anchor, Group, NumberInput, Table, Text} from "@mantine/core";
 import axios from "axios";
-import { DocumentData, DocumentReference, onSnapshot } from "firebase/firestore";
-import { nanoid } from "nanoid";
-import { useCallback, useEffect, useState } from "react";
+import {DocumentData, DocumentReference, onSnapshot} from "firebase/firestore";
+import {nanoid} from "nanoid";
+import {useCallback, useEffect, useState} from "react";
 
-const Election = ({ theme }: { theme: string }) => {
+const Election = ({theme}: { theme: string }) => {
     const [restaurants, setRestaurants] = useState<ListingDetails[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [searchRadius, setSearchRadius] = useState(5);
@@ -24,7 +24,7 @@ const Election = ({ theme }: { theme: string }) => {
         setIsLoading(true);
 
         const res = await axios<RestaurantFinder.Feature[]>("/api/restaurant-finder", {
-            params: { lat, lon, radius: searchRadius },
+            params: {lat, lon, radius: searchRadius},
         });
 
         const sid = nanoid();
@@ -53,8 +53,8 @@ const Election = ({ theme }: { theme: string }) => {
 
         const unsub = onSnapshot(sessionRef, (snap) => {
             if (!snap || !snap.exists()) return;
-
-            setRestaurants(snap.data().listing);
+            // take only 1st 10 restaurants
+            setRestaurants(snap.data().listing.slice(0, 10));
         });
 
         return () => {
@@ -64,34 +64,42 @@ const Election = ({ theme }: { theme: string }) => {
 
     return (
         <>
-            <LocationInput theme={theme} />
-            <NumberInput value={searchRadius} onChange={(e: number) => setSearchRadius(e)} label="Search Radius (KM)" />
-            <Group position="right" mt="md" pt={8}>
+            <LocationInput theme={theme}/>
+            <NumberInput pt={8} value={searchRadius} onChange={(e: number) => setSearchRadius(e)}
+                         label="Search Radius (KM)"/>
+            <Group position="right" mt="md" py={8}>
                 <Button loading={isLoading} onClick={() => fetchRestaurants()} color={theme}>
                     Start Voting!
                 </Button>
             </Group>
             {sessionId && (
                 <>
-                    <div>
-                        Send this link to your friends: <Anchor href={`/session/${sessionId}`}>Vote Here</Anchor>
-                    </div>
+                    <Text py={8}>
+                        Start voting {" "}
+                        <Anchor underline={true} href={`/session/${sessionId}`} target={"_blank"}>
+                            here
+                        </Anchor>
+                        !
+                    </Text>
+                    <Text pt={16} pb={4} weight={"bold"} size={"xl"}>
+                        Leaderboard Results
+                    </Text>
                     <Table>
                         <thead>
-                            <tr>
-                                <th>Restaurant Name</th>
-                                <th>Votes</th>
-                            </tr>
+                        <tr>
+                            <th>Restaurant Name</th>
+                            <th>Votes</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            {restaurants
-                                .sort((a, b) => b.votes.length - a.votes.length)
-                                .map((r) => (
-                                    <tr key={r.id}>
-                                        <td>{r.name}</td>
-                                        <td>{r.votes.length}</td>
-                                    </tr>
-                                ))}
+                        {restaurants
+                            .sort((a, b) => b.votes.length - a.votes.length)
+                            .map((r) => (
+                                <tr key={r.id}>
+                                    <td>{r.name}</td>
+                                    <td>{r.votes.length}</td>
+                                </tr>
+                            ))}
                         </tbody>
                     </Table>
                 </>
