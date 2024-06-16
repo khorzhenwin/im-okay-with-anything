@@ -36,7 +36,6 @@ const ListingCard = ({
         currentIndexRef.current = val;
     };
 
-    const canGoBack = currentIndex < cardList.length - 1;
     const canSwipe = currentIndex >= 0;
 
     const handleSwipe = (direction: string, id: string, index: number) => {
@@ -57,19 +56,11 @@ const ListingCard = ({
         }
     };
 
-    const undoLastSwipe = async () => {
-        if (canGoBack && childRefs[currentIndex + 1].current) {
-            const newIndex = currentIndex + 1;
-            updateCurrentIndex(newIndex);
-            await childRefs[newIndex].current.restoreCard();
-        }
-    };
-
     const getCuisines = (info: ListingDetails) => {
-        if (info.cuisine == null) return null;
+        if (info.cuisine == null || info.cuisine.trim() == "") return null;
 
         return info.cuisine.split(";").map((c) => (
-            <Badge color="teal" key={c}>
+            <Badge color="teal" key={c} radius={"sm"}>
                 {screamingSnakeToTitleCase(c)}
             </Badge>
         ));
@@ -77,7 +68,7 @@ const ListingCard = ({
 
     return (
         <Box pt={24}>
-            <Box pos={"relative"} h={"18rem"}>
+            <Box pos={"relative"} h={"12rem"}>
                 {cardList.map((cardInfo: ListingDetails, index) => (
                     <Box
                         key={cardInfo.id}
@@ -91,12 +82,8 @@ const ListingCard = ({
                             onCardLeftScreen={() => outOfFrame(index)}
                             preventSwipe={["up", "down"]}
                         >
-                            <Card shadow="sm" padding="lg" radius="md" withBorder h={"18rem"}>
-                                <Card.Section>
-                                    <Image src={cardInfo.image} height={160} alt={cardInfo.name} />
-                                </Card.Section>
-
-                                <Stack spacing={8} py={12}>
+                            <Card padding="lg" radius="md" withBorder h={"12rem"}>
+                                <Stack spacing={8} py={8}>
                                     <Text fw={600} className={"truncate"}>
                                         {cardInfo.name}
                                     </Text>
@@ -114,9 +101,6 @@ const ListingCard = ({
             <Group grow my="xs">
                 <Button color={theme} fullWidth mt="md" radius="md" onClick={() => swipe("left")}>
                     👎🏻
-                </Button>
-                <Button color={theme} fullWidth mt="md" radius="md" onClick={undoLastSwipe}>
-                    Undo
                 </Button>
                 <Button color={theme} fullWidth mt="md" radius="md" onClick={() => swipe("right")}>
                     👍🏻

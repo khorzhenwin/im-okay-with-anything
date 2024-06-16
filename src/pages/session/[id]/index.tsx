@@ -1,14 +1,14 @@
 import ListingCard from "@/components/cards/ListingCard";
-import { sessionConverter } from "@/firebase/converters/sessionConverter";
+import {sessionConverter} from "@/firebase/converters/sessionConverter";
 import FirebaseDoc from "@/firebase/interfaces/firebaseDoc";
 import Session from "@/firebase/interfaces/session";
 import SessionRepository from "@/firebase/repository/sessionRepository";
 import useCurrentUserStore from "@/stores/useCurrentUserStore";
-import { SwipeDirection } from "@/utils/types/card";
-import { runTransaction } from "firebase/firestore";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { db } from "../../../../firebase";
+import {SwipeDirection} from "@/utils/types/card";
+import {runTransaction} from "firebase/firestore";
+import {useRouter} from "next/router";
+import {useEffect, useState} from "react";
+import {db} from "../../../../firebase";
 
 const SessionPage = () => {
     const theme = "violet";
@@ -19,7 +19,7 @@ const SessionPage = () => {
     useEffect(() => {
         if (!router.isReady) return;
 
-        const { id } = router.query;
+        const {id} = router.query;
 
         if (id == null) return;
 
@@ -39,7 +39,7 @@ const SessionPage = () => {
                 return;
             }
 
-            setSession({ data: s.data(), ref: s.ref });
+            setSession({data: s.data(), ref: s.ref});
         });
     }, [router, name, setName]);
 
@@ -51,7 +51,7 @@ const SessionPage = () => {
                 const sDoc = await txn.get(session.ref);
                 if (!sDoc.exists()) throw "Document does not exist";
 
-                const data = { ...sDoc.data() };
+                const data = {...sDoc.data()};
 
                 data.listing[index].votes.push(name);
 
@@ -61,19 +61,21 @@ const SessionPage = () => {
     };
 
     return (
-        <div className="flex min-h-screen w-full flex-col items-stretch overflow-hidden">
-            <h3 className="pb-2 text-2xl font-semibold text-white md:text-3xl">{`I'm Okay With Anything`}</h3>
-            <p className="pb-4 text-justify text-xs text-gray-500">
-                The age old response whenever you ask your friends what to eat
-            </p>
-            {session && (
-                <ListingCard
-                    onSwipe={handleSwipe}
-                    theme={theme}
-                    cardList={session.data.listing.filter((l) => !l.votes.includes(name))}
-                />
-            )}
-        </div>
+        <>
+            <div className="flex min-h-screen w-full flex-col items-stretch overflow-hidden">
+                <h3 className="pb-2 text-2xl font-semibold text-white md:text-3xl">{`I'm Okay With Anything`}</h3>
+                <p className="pb-4 text-justify text-xs text-gray-500">
+                    The age old response whenever you ask your friends what to eat
+                </p>
+                {session && (
+                    <ListingCard
+                        onSwipe={handleSwipe}
+                        theme={theme}
+                        cardList={session.data.listing.filter((l) => !l.votes.includes(name))}
+                    />
+                )}
+            </div>
+        </>
     );
 };
 
