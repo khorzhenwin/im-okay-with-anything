@@ -7,31 +7,44 @@ import useCurrentUserStore from "@/stores/useCurrentUserStore";
 import {SwipeDirection} from "@/utils/types/card";
 import {runTransaction} from "firebase/firestore";
 import {useRouter} from "next/router";
-import {useEffect, useState} from "react";
+import {useEffect, useLayoutEffect, useRef, useState} from "react";
 import {db} from "../../../../firebase";
+import {Table, Text} from "@mantine/core";
+import ListingDetails from "@/firebase/interfaces/listingDetails";
 
 const SessionPage = () => {
     const theme = "violet";
     const router = useRouter();
-    const [name, setName] = useCurrentUserStore((state) => [state.name, state.setName]);
+    const [name, hasFinishedVoting, setName] = useCurrentUserStore((state) => [
+        state.name,
+        state.hasFinishedVoting,
+        state.setName
+    ]);
+    const [sessionId , setSessionId] = useState<string>("");
     const [session, setSession] = useState<FirebaseDoc<Session>>();
+    const [restaurantList, setRestaurantList] = useState<ListingDetails[]>([]);
+    const firstPrompt = useRef(true);
+
+    useEffect( () => {
+        // get final votes
+        async function fetchFinalList () {
+            const restaurantList = SessionRepository.findBySessionId(sessionId).then((s) => {
+                if (!s || !s.exists()) return;
+                return s.data().listing;
+            });
+
+            setRestaurantList(await restaurantList.then((r) => r ?? []));
+        }
+        fetchFinalList().then(r => {});
+    }, [session, hasFinishedVoting]);
 
     useEffect(() => {
         if (!router.isReady) return;
 
         const {id} = router.query;
+        if (!id) return;
 
-        if (id == null) return;
-
-        if (name.trim() == "") {
-            let input = prompt("Enter a name");
-
-            while (input == null || input.trim() == "") {
-                input = prompt("Enter a name");
-            }
-
-            setName(input);
-        }
+        setSessionId(id as string);
 
         SessionRepository.findBySessionId(id as string).then((s) => {
             if (s == null || !s.exists()) {
@@ -41,7 +54,20 @@ const SessionPage = () => {
 
             setSession({data: s.data(), ref: s.ref});
         });
-    }, [router, name, setName]);
+    }, [router]);
+
+    useEffect(() => {
+        if (firstPrompt.current && name.trim() === "") {
+            let input = prompt("Enter a name");
+
+            while (input == null || input.trim() == "") {
+                input = prompt("Enter a name");
+            }
+
+            setName(input);
+            firstPrompt.current = false;
+        }
+    }, []);
 
     const handleSwipe = async (direction: SwipeDirection, id: string, index: number) => {
         if (session == null) return;
@@ -68,11 +94,37 @@ const SessionPage = () => {
                     The age old response whenever you ask your friends what to eat
                 </p>
                 {session && (
-                    <ListingCard
-                        onSwipe={handleSwipe}
-                        theme={theme}
-                        cardList={session.data.listing.filter((l) => !l.votes.includes(name))}
-                    />
+                    !hasFinishedVoting ? (
+                        <ListingCard
+                            onSwipe={handleSwipe}
+                            theme={theme}
+                            cardList={session.data.listing.filter((l) => !l.votes.includes(name))}
+                        />) : (
+                        <>
+                            <Text pt={16} pb={4} weight={"bold"} size={"xl"}>
+                                Leaderboard Results
+                            </Text>
+                            <Table>
+                                <thead>
+                                <tr>
+                                    <th>Restaurant Name</th>
+                                    <th>Votes</th>
+                                    <th>Voted by</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {restaurantList
+                                    .sort((a, b) => b.votes.length - a.votes.length)
+                                    .map((r) => (
+                                        <tr key={r.id}>
+                                            <td>{r.name}</td>
+                                            <td>{r.votes.length}</td>
+                                            <td>{r.votes.join()}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        </>)
                 )}
             </div>
         </>

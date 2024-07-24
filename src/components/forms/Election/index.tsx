@@ -5,7 +5,7 @@ import Session from "@/firebase/interfaces/session";
 import SessionRepository from "@/firebase/repository/sessionRepository";
 import useLocationStore from "@/stores/useLocationStore";
 import {Anchor, Group, NumberInput, Table, Text} from "@mantine/core";
-import axios from "axios";
+import axios, {AxiosResponse} from "axios";
 import {DocumentData, DocumentReference, onSnapshot} from "firebase/firestore";
 import {nanoid} from "nanoid";
 import {useCallback, useEffect, useState} from "react";
@@ -19,22 +19,23 @@ const Election = ({theme}: { theme: string }) => {
     const [sessionRef, setSessionRef] = useState<DocumentReference<Session, DocumentData>>();
 
     const fetchRestaurants = useCallback(async () => {
-        if (isLoading === true) return;
-
+        if (isLoading) return;
         setIsLoading(true);
 
-        const res = await axios<RestaurantFinder.Feature[]>("/api/restaurant-finder", {
+        const res: AxiosResponse<RestaurantFinder.Feature[]> = await axios<RestaurantFinder.Feature[]>("/api/restaurant-finder", {
             params: {lat, lon, radius: searchRadius},
         });
+        // take only 1st 15 restaurants
+        const restaurantData: RestaurantFinder.Feature[] = res.data.slice(0, 15);
 
-        const sid = nanoid();
+        const sid: string = nanoid();
         setSessionId(sid);
 
         setSessionRef(
             await SessionRepository.add({
                 location_id: place_id,
                 session_id: sid,
-                listing: res.data.map((d) => ({
+                listing: restaurantData.map((d) => ({
                     cuisine: d.properties.catering?.cuisine ?? "",
                     id: d.properties.place_id,
                     location: d.properties.formatted ?? "Unknown Location",
@@ -53,8 +54,8 @@ const Election = ({theme}: { theme: string }) => {
 
         const unsub = onSnapshot(sessionRef, (snap) => {
             if (!snap || !snap.exists()) return;
-            // take only 1st 10 restaurants
-            setRestaurants(snap.data().listing.slice(0, 10));
+            // take only 1st 15 restaurants
+            setRestaurants(snap.data().listing.slice(0, 15));
         });
 
         return () => {

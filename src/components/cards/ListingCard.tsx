@@ -4,6 +4,7 @@ import { SwipeDirection } from "@/utils/types/card";
 import { Badge, Box, Button, Card, Group, Image, Stack, Text } from "@mantine/core";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import TinderCard from "react-tinder-card";
+import useCurrentUserStore from "@/stores/useCurrentUserStore";
 
 const ListingCard = ({
     theme,
@@ -16,6 +17,7 @@ const ListingCard = ({
 }) => {
     const [currentIndex, setCurrentIndex] = useState(cardList.length - 1);
     const [lastSwipedCard, setLastSwipedCard] = useState<ListingDetails | null>(null);
+    const [setHasFinishedVoting] = useCurrentUserStore((state) => [state.setHasFinishedVoting]);
     const currentIndexRef = useRef(currentIndex);
 
     useEffect(() => {
@@ -34,6 +36,8 @@ const ListingCard = ({
     const updateCurrentIndex = (val: number) => {
         setCurrentIndex(val);
         currentIndexRef.current = val;
+
+        if (val < 0) setHasFinishedVoting(true);
     };
 
     const canSwipe = currentIndex >= 0;
