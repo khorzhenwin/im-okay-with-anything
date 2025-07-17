@@ -10,13 +10,8 @@ const PreferencesSection = ({ form, theme }: { form: any; theme: string }) => {
       </p>
       <SimpleGrid
         className="mt-4"
-        cols={3}
+        cols={{ base: 2, sm: 2, md: 3, lg: 3 }}
         spacing="sm"
-        breakpoints={[
-          { maxWidth: "62rem", cols: 3 },
-          { maxWidth: "48rem", cols: 2 },
-          { maxWidth: "36rem", cols: 2 },
-        ]}
       >
         {Object.keys(initialFormProps.preferences).map((key) => {
           return (

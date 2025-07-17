@@ -38,6 +38,11 @@ const handler = async (req: RestaurantFinderRequest, res: NextApiResponse) => {
         },
     });
 
+    if (result.status !== 200) {
+        res.status(DEFAULT_RESPONSES.BAD_REQUEST.status).json({ message: DEFAULT_RESPONSES.BAD_REQUEST.message });
+        return;
+    }
+
     const filtered = result.data.features.filter((f) => f.properties.name != null);
 
     if (filtered.length === 0) {

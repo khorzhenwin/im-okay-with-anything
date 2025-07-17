@@ -37,7 +37,7 @@ const FoodFinder = ({ theme }: { theme: string }) => {
                         <Text mb="md" fw={700} size="lg" ta="center" c="white">
                             Here is a list of foods we can suggest you
                         </Text>
-                        <LoadingOverlay visible={loadingAnimation} zIndex={1000} overlayOpacity={0.5} />
+                        <LoadingOverlay visible={loadingAnimation} zIndex={1000} opacity={0.5} />
                         <Box c="white" mb="md">
                             {recommendations.map((item, index) => (
                                 <Box

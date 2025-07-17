@@ -1,7 +1,12 @@
-import { createTheme } from "@mantine/core";
+import { createTheme, MantineColorsTuple } from "@mantine/core";
 
-const tailwindColors = {
-  gray: [
+// Convert string arrays to MantineColorsTuple
+const convertToMantineColorsTuple = (colors: string[]): MantineColorsTuple => {
+  return colors as unknown as MantineColorsTuple;
+};
+
+const tailwindColors: Record<string, MantineColorsTuple> = {
+  gray: convertToMantineColorsTuple([
     "#F9FAFB",
     "#F3F4F6",
     "#E5E7EB",
@@ -12,8 +17,8 @@ const tailwindColors = {
     "#374151",
     "#1F2937",
     "#111827",
-  ],
-  red: [
+  ]),
+  red: convertToMantineColorsTuple([
     "#FEF2F2",
     "#FEE2E2",
     "#FECACA",
@@ -24,8 +29,8 @@ const tailwindColors = {
     "#B91C1C",
     "#991B1B",
     "#7F1D1D",
-  ],
-  yellow: [
+  ]),
+  yellow: convertToMantineColorsTuple([
     "#FFFBEB",
     "#FEF3C7",
     "#FDE68A",
@@ -36,8 +41,8 @@ const tailwindColors = {
     "#B45309",
     "#92400E",
     "#78350F",
-  ],
-  green: [
+  ]),
+  green: convertToMantineColorsTuple([
     "#ECFDF5",
     "#D1FAE5",
     "#A7F3D0",
@@ -48,8 +53,8 @@ const tailwindColors = {
     "#047857",
     "#065F46",
     "#064E3B",
-  ],
-  blue: [
+  ]),
+  blue: convertToMantineColorsTuple([
     "#EFF6FF",
     "#DBEAFE",
     "#BFDBFE",
@@ -60,8 +65,8 @@ const tailwindColors = {
     "#1D4ED8",
     "#1E40AF",
     "#1E3A8A",
-  ],
-  indigo: [
+  ]),
+  indigo: convertToMantineColorsTuple([
     "#EEF2FF",
     "#E0E7FF",
     "#C7D2FE",
@@ -72,8 +77,8 @@ const tailwindColors = {
     "#4338CA",
     "#3730A3",
     "#312E81",
-  ],
-  purple: [
+  ]),
+  purple: convertToMantineColorsTuple([
     "#F5F3FF",
     "#EDE9FE",
     "#DDD6FE",
@@ -84,8 +89,8 @@ const tailwindColors = {
     "#6D28D9",
     "#5B21B6",
     "#4C1D95",
-  ],
-  pink: [
+  ]),
+  pink: convertToMantineColorsTuple([
     "#FDF2F8",
     "#FCE7F3",
     "#FBCFE8",
@@ -96,8 +101,8 @@ const tailwindColors = {
     "#BE185D",
     "#9D174D",
     "#831843",
-  ],
-  teal: [
+  ]),
+  teal: convertToMantineColorsTuple([
     "#F0FDFA",
     "#CCFBF1",
     "#99F6E4",
@@ -108,8 +113,8 @@ const tailwindColors = {
     "#0F766E",
     "#115E59",
     "#134E4A",
-  ],
-  orange: [
+  ]),
+  orange: convertToMantineColorsTuple([
     "#FFEDD5",
     "#FED7AA",
     "#FDBA74",
@@ -120,8 +125,8 @@ const tailwindColors = {
     "#9A3412",
     "#7C2D12",
     "#5A1F0E",
-  ],
-  cyan: [
+  ]),
+  cyan: convertToMantineColorsTuple([
     "#ECFEFF",
     "#CFFAFE",
     "#A5F3FC",
@@ -132,8 +137,8 @@ const tailwindColors = {
     "#0E7490",
     "#155E75",
     "#164E63",
-  ],
-  lime: [
+  ]),
+  lime: convertToMantineColorsTuple([
     "#F7FEE7",
     "#ECFCCB",
     "#D9F99D",
@@ -144,7 +149,7 @@ const tailwindColors = {
     "#4D7C0F",
     "#3F6212",
     "#365314",
-  ],
+  ]),
 };
 
 const theme = createTheme({

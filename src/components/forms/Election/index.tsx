@@ -4,13 +4,13 @@ import ListingDetails from "@/firebase/interfaces/listingDetails";
 import Session from "@/firebase/interfaces/session";
 import SessionRepository from "@/firebase/repository/sessionRepository";
 import useLocationStore from "@/stores/useLocationStore";
-import {Anchor, Group, NumberInput, Table, Text} from "@mantine/core";
-import axios, {AxiosResponse} from "axios";
-import {DocumentData, DocumentReference, onSnapshot} from "firebase/firestore";
-import {nanoid} from "nanoid";
-import {useCallback, useEffect, useState} from "react";
+import { Anchor, Group, NumberInput, Table, Text } from "@mantine/core";
+import axios, { AxiosResponse } from "axios";
+import { DocumentData, DocumentReference, onSnapshot } from "firebase/firestore";
+import { nanoid } from "nanoid";
+import { useCallback, useEffect, useState } from "react";
 
-const Election = ({theme}: { theme: string }) => {
+const Election = ({ theme }: { theme: string }) => {
     const [restaurants, setRestaurants] = useState<ListingDetails[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [searchRadius, setSearchRadius] = useState(5);
@@ -22,9 +22,15 @@ const Election = ({theme}: { theme: string }) => {
         if (isLoading) return;
         setIsLoading(true);
 
-        const res: AxiosResponse<RestaurantFinder.Feature[]> = await axios<RestaurantFinder.Feature[]>("/api/restaurant-finder", {
-            params: {lat, lon, radius: searchRadius},
-        });
+        const res: AxiosResponse<RestaurantFinder.Feature[]> = await axios<RestaurantFinder.Feature[]>(
+            "/api/restaurant-finder",
+            {
+                params: { lat, lon, radius: searchRadius },
+            },
+        );
+
+        if (res.status !== 200) return;
+
         // take only 1st 15 restaurants
         const restaurantData: RestaurantFinder.Feature[] = res.data.slice(0, 15);
 
@@ -65,9 +71,13 @@ const Election = ({theme}: { theme: string }) => {
 
     return (
         <>
-            <LocationInput theme={theme}/>
-            <NumberInput pt={8} value={searchRadius} onChange={setSearchRadius}
-                         label="Search Radius (KM)"/>
+            <LocationInput theme={theme} />
+            <NumberInput
+                pt={8}
+                value={searchRadius}
+                onChange={(value) => setSearchRadius(Number(value))}
+                label="Search Radius (KM)"
+            />
             <Group justify="flex-end" mt="md" py={8}>
                 <Button loading={isLoading} onClick={() => fetchRestaurants()} color={theme}>
                     Start Voting!
@@ -76,8 +86,8 @@ const Election = ({theme}: { theme: string }) => {
             {sessionId && (
                 <>
                     <Text py={8}>
-                        Start voting {" "}
-                        <Anchor underline={true} href={`/session/${sessionId}`} target={"_blank"}>
+                        Start voting{" "}
+                        <Anchor underline="always" href={`/session/${sessionId}`} target={"_blank"}>
                             here
                         </Anchor>
                         !
@@ -85,39 +95,47 @@ const Election = ({theme}: { theme: string }) => {
                     <Text pt={16} pb={4} fw={700} size={"xl"}>
                         Leaderboard Results
                     </Text>
-                    <div style={{ width: '100%', overflowX: 'auto' }}>
-                        <table style={{ 
-                            width: '100%', 
-                            borderCollapse: 'collapse',
-                            tableLayout: 'fixed'
-                        }}>
+                    <div style={{ width: "100%", overflowX: "auto" }}>
+                        <table
+                            style={{
+                                width: "100%",
+                                borderCollapse: "collapse",
+                                tableLayout: "fixed",
+                            }}
+                        >
                             <thead>
                                 <tr>
-                                    <th style={{ 
-                                        width: '40%', 
-                                        padding: '12px 16px', 
-                                        textAlign: 'left',
-                                        borderBottom: '2px solid #2C2E33',
-                                        color: 'white'
-                                    }}>
+                                    <th
+                                        style={{
+                                            width: "40%",
+                                            padding: "12px 16px",
+                                            textAlign: "left",
+                                            borderBottom: "2px solid #2C2E33",
+                                            color: "white",
+                                        }}
+                                    >
                                         Restaurant Name
                                     </th>
-                                    <th style={{ 
-                                        width: '20%', 
-                                        padding: '12px 16px', 
-                                        textAlign: 'center',
-                                        borderBottom: '2px solid #2C2E33',
-                                        color: 'white'
-                                    }}>
+                                    <th
+                                        style={{
+                                            width: "20%",
+                                            padding: "12px 16px",
+                                            textAlign: "center",
+                                            borderBottom: "2px solid #2C2E33",
+                                            color: "white",
+                                        }}
+                                    >
                                         Votes
                                     </th>
-                                    <th style={{ 
-                                        width: '40%', 
-                                        padding: '12px 16px', 
-                                        textAlign: 'right',
-                                        borderBottom: '2px solid #2C2E33',
-                                        color: 'white'
-                                    }}>
+                                    <th
+                                        style={{
+                                            width: "40%",
+                                            padding: "12px 16px",
+                                            textAlign: "right",
+                                            borderBottom: "2px solid #2C2E33",
+                                            color: "white",
+                                        }}
+                                    >
                                         Voted by
                                     </th>
                                 </tr>
@@ -126,32 +144,42 @@ const Election = ({theme}: { theme: string }) => {
                                 {restaurants
                                     .sort((a, b) => b.votes.length - a.votes.length)
                                     .map((r, index) => (
-                                        <tr key={r.id} style={{
-                                            backgroundColor: index % 2 === 0 ? 'rgba(255, 255, 255, 0.05)' : 'transparent'
-                                        }}>
-                                            <td style={{ 
-                                                padding: '12px 16px', 
-                                                textAlign: 'left',
-                                                borderBottom: '1px solid #2C2E33',
-                                                color: 'white'
-                                            }}>
+                                        <tr
+                                            key={r.id}
+                                            style={{
+                                                backgroundColor:
+                                                    index % 2 === 0 ? "rgba(255, 255, 255, 0.05)" : "transparent",
+                                            }}
+                                        >
+                                            <td
+                                                style={{
+                                                    padding: "12px 16px",
+                                                    textAlign: "left",
+                                                    borderBottom: "1px solid #2C2E33",
+                                                    color: "white",
+                                                }}
+                                            >
                                                 {r.name}
                                             </td>
-                                            <td style={{ 
-                                                padding: '12px 16px', 
-                                                textAlign: 'center',
-                                                borderBottom: '1px solid #2C2E33',
-                                                color: 'white'
-                                            }}>
+                                            <td
+                                                style={{
+                                                    padding: "12px 16px",
+                                                    textAlign: "center",
+                                                    borderBottom: "1px solid #2C2E33",
+                                                    color: "white",
+                                                }}
+                                            >
                                                 {r.votes.length}
                                             </td>
-                                            <td style={{ 
-                                                padding: '12px 16px', 
-                                                textAlign: 'right',
-                                                borderBottom: '1px solid #2C2E33',
-                                                color: 'white'
-                                            }}>
-                                                {r.votes.join(', ')}
+                                            <td
+                                                style={{
+                                                    padding: "12px 16px",
+                                                    textAlign: "right",
+                                                    borderBottom: "1px solid #2C2E33",
+                                                    color: "white",
+                                                }}
+                                            >
+                                                {r.votes.join(", ")}
                                             </td>
                                         </tr>
                                     ))}

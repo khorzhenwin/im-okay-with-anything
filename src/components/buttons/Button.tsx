@@ -19,6 +19,8 @@ type ButtonProps = MantineButtonProps & {
     | "default"
     | "subtle"
     | "link";
+  onClick?: () => void;
+  type?: "button" | "submit" | "reset";
 };
 
 const sizeToClassMapper = (size: ButtonSize) => {
@@ -41,7 +43,7 @@ const Button = ({
   variant = "filled",
   color = "yellow",
   size = "md",
-  classNames,
+  className,
   ...props
 }: ButtonProps) => {
   return (
@@ -49,13 +51,12 @@ const Button = ({
       {...props}
       color={color}
       variant={variant === "link" ? "subtle" : variant}
-      classNames={{
-        root: clsx("!h-[unset]", sizeToClassMapper(size), classNames?.root, {
-          "!bg-transparent hover:brightness-75 transition-all":
-            variant === "link",
-        }),
-        label: clsx("py-0.5", classNames?.label),
-        ...classNames,
+      className={clsx(sizeToClassMapper(size), className, {
+        "bg-transparent hover:brightness-75 transition-all": variant === "link",
+      })}
+      styles={{
+        root: { height: 'unset' },
+        label: { padding: '2px 0' }
       }}
     >
       {children}

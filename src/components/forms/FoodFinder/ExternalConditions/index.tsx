@@ -28,20 +28,17 @@ const ExternalConditionsSection = ({
             setGroupSizeValue(value);
             form.setFieldValue("externalConditions.groupSize", value);
           }}
-          labelTransition="skew-down"
-          labelTransitionDuration={150}
-          labelTransitionTimingFunction="ease"
+          labelTransitionProps={{
+            transition: "skew-down",
+            duration: 150,
+            timingFunction: "ease"
+          }}
         />
       </div>
       <SimpleGrid
         className="mt-4"
-        cols={3}
+        cols={{ base: 2, sm: 2, md: 3, lg: 3 }}
         spacing="sm"
-        breakpoints={[
-          { maxWidth: "62rem", cols: 3 },
-          { maxWidth: "48rem", cols: 2 },
-          { maxWidth: "36rem", cols: 2 },
-        ]}
       >
         {Object.keys(initialFormProps.externalConditions).map((key: string) => {
           if (key === "groupSize") return null;
