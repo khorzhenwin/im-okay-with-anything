@@ -72,7 +72,12 @@ const ListingCard = ({
 
     return (
         <Box pt={24}>
-            <Box pos={"relative"} h={"12rem"}>
+            <Box pos={"relative"} style={{ 
+                height: '320px', 
+                maxWidth: '500px', 
+                margin: '0 auto',
+                width: '100%'
+            }}>
                 {cardList.map((cardInfo: ListingDetails, index) => (
                     <Box
                         key={cardInfo.id}
@@ -86,16 +91,46 @@ const ListingCard = ({
                             onCardLeftScreen={() => outOfFrame(index)}
                             preventSwipe={["up", "down"]}
                         >
-                            <Card padding="lg" radius="md" withBorder h={"12rem"}>
-                                <Stack spacing={8} py={8}>
-                                    <Text fw={600} className={"truncate"}>
+                            <Card p="md" radius="md" withBorder style={{ 
+                                backgroundColor: '#2C2E33',
+                                boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+                                height: '320px',
+                                display: 'flex',
+                                flexDirection: 'column'
+                            }}>
+                                {cardInfo.image && (
+                                    <Box style={{ 
+                                        width: '100%', 
+                                        height: '160px', 
+                                        overflow: 'hidden',
+                                        borderRadius: '8px',
+                                        marginBottom: '12px'
+                                    }}>
+                                        <Image 
+                                            src={cardInfo.image} 
+                                            alt={cardInfo.name}
+                                            height={160}
+                                            fit="cover"
+                                            style={{ width: '100%' }}
+                                        />
+                                    </Box>
+                                )}
+                                
+                                <Box style={{ flex: 1 }}>
+                                    <Text fw={700} size="lg" className={"truncate"} c="white" mb="xs">
                                         {cardInfo.name}
                                     </Text>
-                                    <Group>{getCuisines(cardInfo)}</Group>
-                                    <Text size="sm" c="dimmed">
+                                    
+                                    <Text size="sm" c="gray.4" mb="md" className={"truncate"}>
                                         {cardInfo.location}
                                     </Text>
-                                </Stack>
+                                    
+                                    {cardInfo.cuisine && cardInfo.cuisine.trim() !== "" && (
+                                        <Group style={{ flexWrap: 'wrap' }}>
+                                            {getCuisines(cardInfo)}
+                                        </Group>
+                                    )}
+                                </Box>
                             </Card>
                         </TinderCard>
                     </Box>

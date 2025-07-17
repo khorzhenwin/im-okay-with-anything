@@ -1,14 +1,14 @@
 import {
   ButtonProps as MantineButtonProps,
   Button as MantineButton,
-  clsx,
+  createPolymorphicComponent,
+  BoxProps,
 } from "@mantine/core";
-
-import { PolymorphicComponentProps } from "@mantine/utils";
+import clsx from 'clsx';
 
 type ButtonSize = "xs" | "sm" | "md" | "lg" | "xl";
 
-type ButtonProps = PolymorphicComponentProps<"button", MantineButtonProps> & {
+type ButtonProps = MantineButtonProps & {
   size?: ButtonSize;
   variant?:
     | "gradient"

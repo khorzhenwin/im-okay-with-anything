@@ -29,12 +29,12 @@ function openModal<T extends ModalType>({
     centered: true,
     scrollAreaComponent: Box as any,
     ...modalProperties,
-    classNames: {
-      header: "absolute bg-transparent top-1 right-1",
-      close: "!bg-transparent text-black hover:text-gray-800",
-      inner: "overflow-hidden",
-      content: "!overflow-hidden",
-      ...modalProperties?.classNames,
+    styles: {
+      header: { position: 'absolute', background: 'transparent', top: '4px', right: '4px' },
+      close: { background: 'transparent', color: 'black', '&:hover': { color: '#333' } },
+      inner: { overflow: 'hidden' },
+      content: { overflow: 'hidden', backgroundColor: '#1A1B1E' },
+      ...modalProperties?.styles,
     },
   });
 }
