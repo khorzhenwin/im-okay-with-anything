@@ -1,20 +1,6 @@
-import { MantineThemeOverride } from "@mantine/core";
+import { createTheme } from "@mantine/core";
 
-const tailwindColors: Record<
-  string,
-  [
-    string,
-    string,
-    string,
-    string,
-    string,
-    string,
-    string,
-    string,
-    string,
-    string
-  ]
-> = {
+const tailwindColors = {
   gray: [
     "#F9FAFB",
     "#F3F4F6",
@@ -161,9 +147,12 @@ const tailwindColors: Record<
   ],
 };
 
-const theme: MantineThemeOverride = {
+const theme = createTheme({
   colors: tailwindColors,
-  colorScheme: "dark",
-};
+  primaryColor: 'blue',
+  defaultRadius: 'sm',
+  // In v7, colorScheme is replaced by color schemes in the MantineProvider
+  // We'll set dark mode in the provider instead
+});
 
 export default theme;

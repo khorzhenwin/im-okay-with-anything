@@ -12,7 +12,7 @@ const HelloWorldModal: MantineModal<HelloWorldModalProps> = ({
 };
 
 HelloWorldModal.properties = {
-  classNames: { close: "hover:bg-gray-200" },
+  styles: { close: { '&:hover': { backgroundColor: '#e5e7eb' } } },
 };
 
 export default HelloWorldModal;

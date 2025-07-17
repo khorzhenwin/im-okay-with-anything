@@ -6,6 +6,10 @@ import { ModalsProvider } from "@mantine/modals";
 import { Notifications } from "@mantine/notifications";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactNode, useState } from "react";
+// Import Mantine styles
+import '@mantine/core/styles.css';
+import '@mantine/dates/styles.css';
+import '@mantine/notifications/styles.css';
 
 const Provider = ({ children }: { children: ReactNode }) => {
   const [client] = useState(
@@ -15,7 +19,7 @@ const Provider = ({ children }: { children: ReactNode }) => {
   return (
     <AxiosProvider>
       <QueryClientProvider client={client}>
-        <MantineProvider withGlobalStyles withNormalizeCSS theme={theme}>
+        <MantineProvider theme={theme} defaultColorScheme="dark">
           <ModalsProvider modals={modals}>{children}</ModalsProvider>
           <Notifications />
         </MantineProvider>

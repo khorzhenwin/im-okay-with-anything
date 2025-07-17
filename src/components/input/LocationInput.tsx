@@ -72,7 +72,7 @@ const LocationInput = ({ theme }: { theme: string }) => {
         <>
             <Box mt={"xl"}>
                 <Box pos="relative">
-                    <LoadingOverlay visible={loadingAnimation} zIndex={1000} overlayBlur={0} overlayOpacity={0.5} />
+                    <LoadingOverlay visible={loadingAnimation} zIndex={1000} overlayOpacity={0.5} />
                     <Autocomplete
                         data={addressOptions.map((a) => ({
                             value: a.formatted,
@@ -82,7 +82,7 @@ const LocationInput = ({ theme }: { theme: string }) => {
                         }))}
                         value={locationName}
                         onChange={setLocationName}
-                        onItemSubmit={(item) => {
+                        onOptionSubmit={(item: any) => {
                             setLocationName(item.value);
                             setLocationId(item.place_id);
                             setLatitude(item.lat);
