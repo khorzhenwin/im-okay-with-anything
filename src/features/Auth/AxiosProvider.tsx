@@ -2,14 +2,14 @@ import { notifications } from "@mantine/notifications";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import axios, { AxiosResponse } from "axios";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { ReactNode, useEffect } from "react";
 
 const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
 });
 const queryClient = new QueryClient();
 
-const AxiosProvider = ({ children }: { children: JSX.Element }) => {
+const AxiosProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
 
   useEffect(() => {
@@ -50,7 +50,7 @@ const AxiosProvider = ({ children }: { children: JSX.Element }) => {
       apiClient.interceptors.response.eject(interceptor);
       apiClient.interceptors.request.eject(reqInterceptor);
     };
-  }, []);
+  }, [router]);
 
   return (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>

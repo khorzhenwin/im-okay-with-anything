@@ -16,9 +16,8 @@ const AuthGuard = ({ Component, pageProps }: AuthGuardProps) => {
   const router = useRouter();
 
   const getLayout = Component.getLayout || getDefaultLayout;
-
-  const isAuthenticated =
-    Component.isPublic || session.status === "authenticated";
+  const isPublic = Boolean(Component.isPublic);
+  const isAuthenticated = isPublic || session.status === "authenticated";
 
   useEffect(() => {
     if (!isAuthenticated && session.status !== "loading") {
@@ -28,9 +27,9 @@ const AuthGuard = ({ Component, pageProps }: AuthGuardProps) => {
       });
       router.push("/");
     }
-  }, [Component, session.status]);
+  }, [isAuthenticated, router, session.status]);
 
-  if (session.status === "loading" && !Component.isPublic) {
+  if (session.status === "loading" && !isPublic) {
     return <SplashScreen />;
   }
 

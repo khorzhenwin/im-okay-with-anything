@@ -29,6 +29,7 @@ const SessionPage = () => {
     useEffect(() => {
         // get final votes
         async function fetchFinalList() {
+            if (!sessionId) return;
             const restaurantList = SessionRepository.findBySessionId(sessionId).then((s) => {
                 if (!s || !s.exists()) return;
                 return s.data().listing;
@@ -37,7 +38,7 @@ const SessionPage = () => {
             setRestaurantList(await restaurantList.then((r) => r ?? []));
         }
         fetchFinalList().then((r) => {});
-    }, [session, hasFinishedVoting]);
+    }, [hasFinishedVoting, session, sessionId]);
 
     useEffect(() => {
         if (!router.isReady) return;
