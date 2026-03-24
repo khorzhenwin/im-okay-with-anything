@@ -3,16 +3,17 @@ import { initialFormProps, FormProps } from "@/utils/types/forms";
 import { Box, Group, Modal, Text, List, LoadingOverlay, ThemeIcon, rem } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
+import { useShallow } from "zustand/react/shallow";
 import ExternalConditionsSection from "./ExternalConditions";
 import FoodPreferencesSection from "./FoodPreferences";
 import useRecommendationStore from "@/stores/useRecommendationStore";
 import { FaArrowRight } from "react-icons/fa";
 
 const FoodFinder = ({ theme }: { theme: string }) => {
-    const [recommendations, setRecommendations] = useRecommendationStore((state) => [
+    const [recommendations, setRecommendations] = useRecommendationStore(useShallow((state) => [
         state.recommendations,
         state.setRecommendations,
-    ]);
+    ]));
     const [openModal, openModalHandlers] = useDisclosure(false);
     const [loadingAnimation, loadingAnimationHandlers] = useDisclosure(false);
     const initialGroupSize: number = 2;

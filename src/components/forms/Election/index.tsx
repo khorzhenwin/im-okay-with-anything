@@ -9,12 +9,15 @@ import axios, { AxiosResponse } from "axios";
 import { DocumentData, DocumentReference, onSnapshot } from "firebase/firestore";
 import { nanoid } from "nanoid";
 import { useCallback, useEffect, useState } from "react";
+import { useShallow } from "zustand/react/shallow";
 
 const Election = ({ theme }: { theme: string }) => {
     const [restaurants, setRestaurants] = useState<ListingDetails[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [searchRadius, setSearchRadius] = useState(5);
-    const [lat, lon, place_id] = useLocationStore((state) => [state.latitude, state.longitude, state.locationId]);
+    const [lat, lon, place_id] = useLocationStore(
+        useShallow((state) => [state.latitude, state.longitude, state.locationId]),
+    );
     const [sessionId, setSessionId] = useState<string>();
     const [sessionRef, setSessionRef] = useState<DocumentReference<Session, DocumentData>>();
 

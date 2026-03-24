@@ -7,6 +7,7 @@ import useCurrentUserStore from "@/stores/useCurrentUserStore";
 import { SwipeDirection } from "@/utils/types/card";
 import { runTransaction } from "firebase/firestore";
 import { useRouter } from "next/router";
+import { useShallow } from "zustand/react/shallow";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { db } from "../../../../firebase";
 import { Table, Text } from "@mantine/core";
@@ -15,12 +16,12 @@ import ListingDetails from "@/firebase/interfaces/listingDetails";
 const SessionPage = () => {
     const theme = "violet";
     const router = useRouter();
-    const [name, hasFinishedVoting, setName, setHasFinishedVoting] = useCurrentUserStore((state) => [
+    const [name, hasFinishedVoting, setName, setHasFinishedVoting] = useCurrentUserStore(useShallow((state) => [
         state.name,
         state.hasFinishedVoting,
         state.setName,
         state.setHasFinishedVoting,
-    ]);
+    ]));
     const [sessionId, setSessionId] = useState<string>("");
     const [session, setSession] = useState<FirebaseDoc<Session>>();
     const [restaurantList, setRestaurantList] = useState<ListingDetails[]>([]);

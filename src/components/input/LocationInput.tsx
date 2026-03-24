@@ -5,16 +5,19 @@ import { IconMapPin } from "@tabler/icons-react";
 import axios from "axios";
 import "dotenv/config";
 import { useCallback, useEffect, useState } from "react";
+import { useShallow } from "zustand/react/shallow";
 
 const LocationInput = ({ theme }: { theme: string }) => {
     const [loadingAnimation, loadingAnimationHandlers] = useDisclosure(false);
-    const [locationName, setLocationName, setLatitude, setLongitude, setLocationId] = useLocationStore((state) => [
-        state.locationName,
-        state.setLocationName,
-        state.setLatitude,
-        state.setLongitude,
-        state.setLocationId,
-    ]);
+    const [locationName, setLocationName, setLatitude, setLongitude, setLocationId] = useLocationStore(
+        useShallow((state) => [
+            state.locationName,
+            state.setLocationName,
+            state.setLatitude,
+            state.setLongitude,
+            state.setLocationId,
+        ]),
+    );
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [debouncedQuery] = useDebouncedValue(locationName, 500);
     const [addressOptions, setAddressOptions] = useState<AddressAutocomplete.Result[]>([]);
