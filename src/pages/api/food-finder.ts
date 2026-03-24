@@ -1,7 +1,7 @@
 import {FormProps} from "@/utils/types/forms";
 import {NextApiRequest, NextApiResponse} from "next";
 import {DEFAULT_RESPONSES} from "@/utils/errors/default";
-import {formatPrompt, promptModel} from "@/utils/helpers/prompt";
+import {formatPrompt, promptModel, PromptModelError} from "@/utils/helpers/prompt";
 
 interface FormRequest extends NextApiRequest {
     body: FormProps | string;
@@ -34,9 +34,12 @@ const handler = async (
         return res.status(DEFAULT_RESPONSES.CREATED.status).json({recommendation: recommendationList});
     } catch (error) {
         console.error("food-finder handler failed", error);
+        const message = error instanceof PromptModelError
+            ? error.message
+            : DEFAULT_RESPONSES.INTERNAL_SERVER_ERROR.message;
         return res
             .status(DEFAULT_RESPONSES.INTERNAL_SERVER_ERROR.status)
-            .json({message: DEFAULT_RESPONSES.INTERNAL_SERVER_ERROR.message});
+            .json({message});
     }
 };
 
