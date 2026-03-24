@@ -5,6 +5,7 @@ import { Badge, Box, Button, Card, Group, Image, Stack, Text } from "@mantine/co
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import TinderCard from "react-tinder-card";
 import useCurrentUserStore from "@/stores/useCurrentUserStore";
+import { useShallow } from "zustand/react/shallow";
 
 const ListingCard = ({
     theme,
@@ -17,7 +18,7 @@ const ListingCard = ({
 }) => {
     const [currentIndex, setCurrentIndex] = useState(cardList.length - 1);
     const [lastSwipedCard, setLastSwipedCard] = useState<ListingDetails | null>(null);
-    const [setHasFinishedVoting] = useCurrentUserStore((state) => [state.setHasFinishedVoting]);
+    const [setHasFinishedVoting] = useCurrentUserStore(useShallow((state) => [state.setHasFinishedVoting]));
     const currentIndexRef = useRef(currentIndex);
 
     useEffect(() => {
