@@ -3,7 +3,7 @@ import 'dotenv/config'
 import {FormProps} from "@/utils/types/forms";
 
 const GOOGLE_AI_STUDIO_API_KEY: string | undefined = process.env.GOOGLE_AI_STUDIO_API_KEY;
-const MODEL_NAME = "gemini-1.5-flash";
+const MODEL_NAME = "gemini-2.5-flash";
 
 export class PromptModelError extends Error {
     constructor(message: string) {
@@ -18,7 +18,7 @@ export const promptModel = async (prompt: string): Promise<string> => {
     }
 
     try {
-        // The Gemini 1.5 models are versatile and work with both text-only and multimodal prompts
+        // Use a currently supported low-latency text model for food recommendations.
         const genAI = new GoogleGenerativeAI(GOOGLE_AI_STUDIO_API_KEY);
         const model = genAI.getGenerativeModel({model: MODEL_NAME});
         const result = await model.generateContent(prompt);

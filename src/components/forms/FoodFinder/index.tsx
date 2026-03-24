@@ -1,8 +1,9 @@
 import Button from "@/components/buttons/Button";
 import { initialFormProps, FormProps } from "@/utils/types/forms";
-import { Box, Group, Modal, Text, List, LoadingOverlay, ThemeIcon, rem } from "@mantine/core";
+import { Box, Group, Modal, Text, LoadingOverlay } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
+import { useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import ExternalConditionsSection from "./ExternalConditions";
 import FoodPreferencesSection from "./FoodPreferences";
@@ -14,6 +15,7 @@ const FoodFinder = ({ theme }: { theme: string }) => {
         state.recommendations,
         state.setRecommendations,
     ]));
+    const [errorMessage, setErrorMessage] = useState("");
     const [openModal, openModalHandlers] = useDisclosure(false);
     const [loadingAnimation, loadingAnimationHandlers] = useDisclosure(false);
     const initialGroupSize: number = 2;
@@ -40,6 +42,11 @@ const FoodFinder = ({ theme }: { theme: string }) => {
                         </Text>
                         <LoadingOverlay visible={loadingAnimation} zIndex={1000} opacity={0.5} />
                         <Box c="white" mb="md">
+                            {errorMessage ? (
+                                <Text c="red.4" size="sm">
+                                    {errorMessage}
+                                </Text>
+                            ) : null}
                             {recommendations.map((item, index) => (
                                 <Box
                                     key={index}
@@ -100,6 +107,7 @@ const FoodFinder = ({ theme }: { theme: string }) => {
     }
 
     async function onSubmit(values: FormProps) {
+        setErrorMessage("");
         setRecommendations([]);
         loadingAnimationHandlers.open();
         openModalHandlers.open();
@@ -120,6 +128,7 @@ const FoodFinder = ({ theme }: { theme: string }) => {
             setRecommendations(data.recommendation ?? []);
         } catch (error) {
             console.error("food-finder request failed", error);
+            setErrorMessage(error instanceof Error ? error.message : "Unable to generate recommendations.");
             setRecommendations([]);
         } finally {
             loadingAnimationHandlers.close();
