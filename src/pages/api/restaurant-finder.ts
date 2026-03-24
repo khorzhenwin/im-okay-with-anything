@@ -19,7 +19,7 @@ interface RestaurantFinderRequest extends NextApiRequest {
 
 const GEOAPIFY_API_KEY: string | undefined = process.env.GEOAPIFY_KEY;
 
-const handler = async (req: RestaurantFinderRequest, res: NextApiResponse) => {
+const handler = async (req: RestaurantFinderRequest, res: NextApiResponse<RestaurantFinder.Feature[] | { message: string }>) => {
     const { success, data } = RestaurantFinderQuerySchema.safeParse(req.query);
 
     if (!success) {
@@ -27,30 +27,51 @@ const handler = async (req: RestaurantFinderRequest, res: NextApiResponse) => {
         return;
     }
 
-    const result = await axios<RestaurantFinder.Response>("https://api.geoapify.com/v2/places", {
-        method: "GET",
-        params: {
-            categories: "catering.restaurant",
-            filter: `circle:${data.lon},${data.lat},${data.radius * 1000}`,
-            limit: 100,
-            bias: `proximity:${data.lon},${data.lat}`,
-            apiKey: GEOAPIFY_API_KEY,
-        },
-    });
-
-    if (result.status !== 200) {
-        res.status(DEFAULT_RESPONSES.BAD_REQUEST.status).json({ message: DEFAULT_RESPONSES.BAD_REQUEST.message });
+    if (GEOAPIFY_API_KEY == null || GEOAPIFY_API_KEY.trim().length === 0) {
+        res.status(DEFAULT_RESPONSES.INTERNAL_SERVER_ERROR.status).json({
+            message: "Geoapify API key is missing. Set GEOAPIFY_KEY before requesting restaurants.",
+        });
         return;
     }
 
-    const filtered = result.data.features.filter((f) => f.properties.name != null);
+    try {
+        const result = await axios<RestaurantFinder.Response>("https://api.geoapify.com/v2/places", {
+            method: "GET",
+            params: {
+                categories: "catering.restaurant",
+                filter: `circle:${data.lon},${data.lat},${data.radius * 1000}`,
+                limit: 100,
+                bias: `proximity:${data.lon},${data.lat}`,
+                apiKey: GEOAPIFY_API_KEY,
+            },
+        });
 
-    if (filtered.length === 0) {
-        res.json([]);
+        const filtered = result.data.features.filter((f) => f.properties.name != null);
+
+        if (filtered.length === 0) {
+            res.json([]);
+            return;
+        }
+
+        res.json(shuffle(filtered));
+        return;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            const status = error.response?.status ?? DEFAULT_RESPONSES.BAD_REQUEST.status;
+            const geoapifyMessage =
+                typeof error.response?.data?.message === "string"
+                    ? error.response.data.message
+                    : error.message;
+
+            res.status(status).json({ message: `Geoapify Places API error: ${geoapifyMessage}` });
+            return;
+        }
+
+        res.status(DEFAULT_RESPONSES.INTERNAL_SERVER_ERROR.status).json({
+            message: DEFAULT_RESPONSES.INTERNAL_SERVER_ERROR.message,
+        });
         return;
     }
-
-    return res.json(shuffle(filtered));
 };
 
 export default handler;

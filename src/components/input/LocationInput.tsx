@@ -1,14 +1,13 @@
 import useLocationStore from "@/stores/useLocationStore";
 import { Autocomplete, Box, LoadingOverlay, rem } from "@mantine/core";
-import { useDebouncedValue, useDisclosure } from "@mantine/hooks";
+import { useDebouncedValue } from "@mantine/hooks";
 import { IconMapPin } from "@tabler/icons-react";
 import axios from "axios";
 import "dotenv/config";
 import { useCallback, useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
-const LocationInput = ({ theme }: { theme: string }) => {
-    const [loadingAnimation, loadingAnimationHandlers] = useDisclosure(false);
+const LocationInput = ({ theme: _theme }: { theme: string }) => {
     const [locationName, setLocationName, setLatitude, setLongitude, setLocationId] = useLocationStore(
         useShallow((state) => [
             state.locationName,
@@ -35,6 +34,26 @@ const LocationInput = ({ theme }: { theme: string }) => {
     useEffect(() => {
         fetchAddressAutocomplete();
     }, [fetchAddressAutocomplete]);
+
+    const syncSelectedAddress = useCallback(
+        (value: string) => {
+            const selectedAddress = addressOptions.find((option) => option.formatted === value);
+
+            setLocationName(value);
+
+            if (selectedAddress == null) {
+                setLocationId("");
+                setLatitude("0");
+                setLongitude("0");
+                return;
+            }
+
+            setLocationId(selectedAddress.place_id);
+            setLatitude(selectedAddress.lat.toString());
+            setLongitude(selectedAddress.lon.toString());
+        },
+        [addressOptions, setLatitude, setLongitude, setLocationId, setLocationName],
+    );
 
     const getUserLocation = useCallback(() => {
         if (isLoading === true) return;
@@ -75,22 +94,12 @@ const LocationInput = ({ theme }: { theme: string }) => {
         <>
             <Box mt={"xl"}>
                 <Box pos="relative">
-                    <LoadingOverlay visible={loadingAnimation} zIndex={1000} opacity={0.5} />
+                    <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ opacity: 0.5 }} />
                     <Autocomplete
-                        data={addressOptions.map((a) => ({
-                            value: a.formatted,
-                            lat: a.lat,
-                            lon: a.lon,
-                            place_id: a.place_id,
-                        }))}
+                        data={addressOptions.map((a) => a.formatted)}
                         value={locationName}
-                        onChange={setLocationName}
-                        onOptionSubmit={(item: any) => {
-                            setLocationName(item.value);
-                            setLocationId(item.place_id);
-                            setLatitude(item.lat);
-                            setLongitude(item.lon);
-                        }}
+                        onChange={syncSelectedAddress}
+                        onOptionSubmit={syncSelectedAddress}
                         label="Enter your location"
                         placeholder="Cheras, Kuala Lumpur"
                         rightSectionProps={{ style: { cursor: "pointer" } }}

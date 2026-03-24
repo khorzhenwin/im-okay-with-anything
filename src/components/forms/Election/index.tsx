@@ -5,6 +5,7 @@ import Session from "@/firebase/interfaces/session";
 import SessionRepository from "@/firebase/repository/sessionRepository";
 import useLocationStore from "@/stores/useLocationStore";
 import { Anchor, Group, NumberInput, Table, Text } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import axios, { AxiosResponse } from "axios";
 import { DocumentData, DocumentReference, onSnapshot } from "firebase/firestore";
 import { nanoid } from "nanoid";
@@ -23,39 +24,52 @@ const Election = ({ theme }: { theme: string }) => {
 
     const fetchRestaurants = useCallback(async () => {
         if (isLoading) return;
+
+        const hasResolvedLocation = place_id.trim().length > 0 && Number(lat) !== 0 && Number(lon) !== 0;
+
+        if (!hasResolvedLocation) {
+            notifications.show({
+                color: "red",
+                message: "Pick a location from the Geoapify suggestions or use your current location before starting voting.",
+            });
+            return;
+        }
+
         setIsLoading(true);
 
-        const res: AxiosResponse<RestaurantFinder.Feature[]> = await axios<RestaurantFinder.Feature[]>(
-            "/api/restaurant-finder",
-            {
-                params: { lat, lon, radius: searchRadius },
-            },
-        );
+        try {
+            const res: AxiosResponse<RestaurantFinder.Feature[]> = await axios<RestaurantFinder.Feature[]>(
+                "/api/restaurant-finder",
+                {
+                    params: { lat, lon, radius: searchRadius },
+                },
+            );
 
-        if (res.status !== 200) return;
+            if (res.status !== 200) return;
 
-        // take only 1st 15 restaurants
-        const restaurantData: RestaurantFinder.Feature[] = res.data.slice(0, 15);
+            // take only 1st 15 restaurants
+            const restaurantData: RestaurantFinder.Feature[] = res.data.slice(0, 15);
 
-        const sid: string = nanoid();
-        setSessionId(sid);
+            const sid: string = nanoid();
+            setSessionId(sid);
 
-        setSessionRef(
-            await SessionRepository.add({
-                location_id: place_id,
-                session_id: sid,
-                listing: restaurantData.map((d) => ({
-                    cuisine: d.properties.catering?.cuisine ?? "",
-                    id: d.properties.place_id,
-                    location: d.properties.formatted ?? "Unknown Location",
-                    name: d.properties.name_international?.en ?? d.properties.name ?? "Unknown Restaurant",
-                    votes: [],
-                    image: "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png",
-                })),
-            }),
-        );
-
-        setIsLoading(false);
+            setSessionRef(
+                await SessionRepository.add({
+                    location_id: place_id,
+                    session_id: sid,
+                    listing: restaurantData.map((d) => ({
+                        cuisine: d.properties.catering?.cuisine ?? "",
+                        id: d.properties.place_id,
+                        location: d.properties.formatted ?? "Unknown Location",
+                        name: d.properties.name_international?.en ?? d.properties.name ?? "Unknown Restaurant",
+                        votes: [],
+                        image: "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png",
+                    })),
+                }),
+            );
+        } finally {
+            setIsLoading(false);
+        }
     }, [isLoading, searchRadius, lat, lon, place_id]);
 
     useEffect(() => {
