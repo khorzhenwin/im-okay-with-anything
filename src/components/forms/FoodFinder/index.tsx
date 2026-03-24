@@ -103,16 +103,28 @@ const FoodFinder = ({ theme }: { theme: string }) => {
         setRecommendations([]);
         loadingAnimationHandlers.open();
         openModalHandlers.open();
-        await fetch("/api/food-finder", {
-            method: "POST",
-            body: JSON.stringify(values),
-        })
-            .then((res) => res.json())
-            .then((data) => setRecommendations(data.recommendation))
-            .then(() => {
-                loadingAnimationHandlers.close();
-                openModalHandlers.open();
+        try {
+            const response = await fetch("/api/food-finder", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(values),
             });
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message ?? "Unable to generate recommendations.");
+            }
+
+            setRecommendations(data.recommendation ?? []);
+        } catch (error) {
+            console.error("food-finder request failed", error);
+            setRecommendations([]);
+        } finally {
+            loadingAnimationHandlers.close();
+            openModalHandlers.open();
+        }
     }
 };
 

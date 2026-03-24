@@ -3,14 +3,36 @@ import 'dotenv/config'
 import {FormProps} from "@/utils/types/forms";
 
 const GOOGLE_AI_STUDIO_API_KEY: string | undefined = process.env.GOOGLE_AI_STUDIO_API_KEY;
-const genAI = new GoogleGenerativeAI(<string>GOOGLE_AI_STUDIO_API_KEY);
+const MODEL_NAME = "gemini-1.5-flash";
+
+export class PromptModelError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = "PromptModelError";
+    }
+}
 
 export const promptModel = async (prompt: string): Promise<string> => {
-    // The Gemini 1.5 models are versatile and work with both text-only and multimodal prompts
-    const model = genAI.getGenerativeModel({model: "gemini-1.5-flash"});
+    if (!GOOGLE_AI_STUDIO_API_KEY) {
+        throw new PromptModelError("Missing GOOGLE_AI_STUDIO_API_KEY server environment variable.");
+    }
 
-    const result = await model.generateContent(prompt);
-    return result.response.text();
+    try {
+        // The Gemini 1.5 models are versatile and work with both text-only and multimodal prompts
+        const genAI = new GoogleGenerativeAI(GOOGLE_AI_STUDIO_API_KEY);
+        const model = genAI.getGenerativeModel({model: MODEL_NAME});
+        const result = await model.generateContent(prompt);
+        const responseText = result.response.text().trim();
+
+        if (!responseText) {
+            throw new PromptModelError(`Model ${MODEL_NAME} returned an empty response.`);
+        }
+
+        return responseText;
+    } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        throw new PromptModelError(message);
+    }
 }
 
 export const formatPrompt = (data: FormProps): string => {
